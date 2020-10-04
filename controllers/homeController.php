@@ -10,7 +10,9 @@ class HomeController{
         //TODO mostrar peliculas
         $api = new api();
         //$api->getMovies(1);
-        $api->getFullMovies();        
+        //$api->getFullMovies();        
+
+        include('form.php');
     }
 }
 
