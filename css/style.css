@@ -33,3 +33,30 @@ body {
      margin-left: 10px !important;
      width: 20px !important;
    }
+
+.navBar {
+     display: flex;
+     justify-content: space-between;
+     height: 5em;
+     align-items: center;
+     border: #dadada solid 1px;
+     border-bottom: none;
+     flex-wrap: wrap;
+}
+
+.navList {
+     list-style: none;
+     list-style: none;
+     margin: 0;
+     padding: 0;
+     display: flex;
+     height: inherit;
+}
+
+.navItem {
+     padding: 1em;
+}
+
+.indexTitle {
+     padding-left: 27em;
+}
