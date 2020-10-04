@@ -9,8 +9,10 @@ class HomeController{
         echo "hey";
         //TODO mostrar peliculas
         $api = new api();
-        //$api->getMovies(1);
-        $api->getFullMovies();        
+        $movies = $api->getMovies();
+
+        var_dump($movies);
+        //$api->getFullMovies();        
     }
 }
 

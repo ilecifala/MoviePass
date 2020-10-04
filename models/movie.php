@@ -10,9 +10,10 @@ class Movie{
     private $genresId;
     private $releaseDate;
 
-    public function __construct($id, $title, $img, $originalLanguage, $genresId, $releaseDate){
+    public function __construct($id, $title, $overview, $img, $originalLanguage, $genresId, $releaseDate){
         $this->id = $id;
-        $this->title = $title;
+		$this->title = $title;
+		$this->overview = $overview;
         $this->img = $img;
         $this->originalLanguage = $originalLanguage;
         $this->genresId = $genresId;
