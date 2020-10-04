@@ -9,6 +9,15 @@ class MovieDbInterface{
     const IMAGE_URL = "http://image.tmdb.org/t/p/w500/";
     const DEFAULT_LANG = "ES_es";
 
+    public function getFullMovies(){
+        $movies = [];
+        for($i=1 ; $i< 11; $i++){
+            $movies[] = $this->getMovies($i);
+        }
+        var_dump($movies);
+        return $movies;
+
+    }
 
 
     public function getMovies($page = 1){
@@ -17,7 +26,7 @@ class MovieDbInterface{
         $resultsRaw = file_get_contents($url);
         $results = json_decode($resultsRaw, true);   
         $movies = $results['results'];
-        
+
         foreach($results['results'] as $jsonMovie){
             $movie = new Movie($jsonMovie['id'], $jsonMovie['original_title'], self::IMAGE_URL . $jsonMovie['poster_path'], $jsonMovie['original_language'], $jsonMovie['genre_ids'], $jsonMovie['release_date']);
             $resultMovies[] = $movie;
