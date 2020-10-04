@@ -11,7 +11,7 @@ class HomeController{
         $api = new api();
         //$api->getMovies(1);
         //$api->getFullMovies();  
-        include("views/index.php");      
+        include("views/index.php");
     }
 }
 
