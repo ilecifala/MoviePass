@@ -77,11 +77,14 @@ class MovieRepository implements IRepository {
         file_put_contents(self::GENRES_FILE, $jsonContent);
     }
 
+    public function getById($id){
+        foreach($this->movies as $movie){
+            if($movie->getId() == $id)
+                return $movie;
+        }
+    }
+
 
 }
-
-
-
-
 
 ?>
