@@ -9,17 +9,8 @@ class MovieDbInterface{
     const IMAGE_URL = "http://image.tmdb.org/t/p/w500/";
     const DEFAULT_LANG = "es";
 
-    public function getFullMovies(){        
-        $movies = [];
-        for($i=1 ; $i< 11; $i++){
-            $movies[] = $this->getMovies($i);
-        }
-        return $movies;
-    }
-
-
-    public function getMovies($page = 1){
-        $url = self::ROOT_URL . "movie/now_playing?api_key=" . MOVIEDB_KEY . "&language=" . self::DEFAULT_LANG . "&page=" . $page;
+    public function getMovies($page = 1, $lang = self::DEFAULT_LANG){
+        $url = self::ROOT_URL . "movie/now_playing?api_key=" . MOVIEDB_KEY . "&language=" . $lang . "&page=" . $page;
         $resultRaw = file_get_contents($url);
         $result = json_decode($resultRaw, true);   
         $movies = $result['results'];
@@ -31,8 +22,8 @@ class MovieDbInterface{
         return $resultMovies;
     }
 
-    public function getGenres(){
-        $url = self::ROOT_URL . "genre/movie/list?api_key=" . MOVIEDB_KEY . "&language=" . self::DEFAULT_LANG;
+    public function getGenres($lang = self::DEFAULT_LANG){
+        $url = self::ROOT_URL . "genre/movie/list?api_key=" . MOVIEDB_KEY . "&language=" . $lang;
         $resultRaw = file_get_contents($url);
         $result = json_decode($resultRaw, true);   
         $genres = $result['genres'];

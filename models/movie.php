@@ -4,7 +4,8 @@ namespace models;
 class Movie{
 
     private $id;
-    private $title;
+	private $title;
+	private $overview;
     private $img;
     private $originalLanguage;
     private $genresId;
@@ -35,6 +36,15 @@ class Movie{
 	public function setTitle($title){
 		$this->title = $title;
 	}
+	
+	public function getOverview(){
+		return $this->overview;
+	}
+
+	public function setOverview($overview){
+		$this->overview = $overview;
+	}
+
 
 	public function getImg(){
 		return $this->img;
