@@ -6,13 +6,11 @@ use api\MovieDbInterface as api;
 class HomeController{
 
     public function index(){
-        echo "hey";
+        //echo "hey";
         //TODO mostrar peliculas
         $api = new api();
-        $movies = $api->getMovies();
-
-        var_dump($movies);
-        //$api->getFullMovies();        
+        $api->getFullMovies();  
+        include("views/index.php");
     }
 }
 
