@@ -14,7 +14,6 @@ class MovieDbInterface{
         for($i=1 ; $i< 11; $i++){
             $movies[] = $this->getMovies($i);
         }
-        var_dump($movies);
         return $movies;
     }
 
