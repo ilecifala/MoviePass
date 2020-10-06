@@ -36,4 +36,10 @@ class MovieController{
 		var_dump($this->movieRepo->getAll());
     }
 
+    public function getMovie($id){
+        echo $id;
+        $movie = $this->movieRepo->getById($id);
+        var_dump($movie);
+    }
+
 }
