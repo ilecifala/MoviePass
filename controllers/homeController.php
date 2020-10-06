@@ -8,8 +8,8 @@ class HomeController{
     public function index(){
         //echo "hey";
         //TODO mostrar peliculas
-        $api = new api();
-        $api->getFullMovies();  
+        //$api = new api();
+        //$api->getFullMovies();  
         include("views/index.php");
     }
 }
