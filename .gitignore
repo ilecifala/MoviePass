@@ -1,1 +1,3 @@
 config/auth.php
+data/*
+**/*Test.php

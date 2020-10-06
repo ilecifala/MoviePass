@@ -3,6 +3,7 @@ namespace repository;
 
 interface IRepository{
     public function getAll();
-    public function add($user);
+    public function add($object);
+    public function exists($value);
 }
 ?>

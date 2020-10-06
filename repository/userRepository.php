@@ -32,6 +32,15 @@ class UserRepository implements IRepository {
         $this->saveData();
     }
 
+    public function exists($email){
+        foreach($this->usersList as $user){
+            if($user->getEmail() == $email){
+                return true;
+            }
+        }
+        return false;
+    }
+
     private function saveData(){
         $arrayToEncode = array();
         foreach($this->usersList as $user){
