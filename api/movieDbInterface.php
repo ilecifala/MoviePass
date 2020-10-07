@@ -6,7 +6,7 @@ use models\genre as Genre;
 class MovieDbInterface{
 
     const ROOT_URL = "https://api.themoviedb.org/3/";
-    const IMAGE_URL = "http://image.tmdb.org/t/p/w500/";
+    const IMAGE_URL = "http://image.tmdb.org/t/p/w500";
     const DEFAULT_LANG = "es";
 
     public function getMovies($page = 1, $lang = self::DEFAULT_LANG){
@@ -15,11 +15,14 @@ class MovieDbInterface{
         $result = json_decode($resultRaw, true);   
         $movies = $result['results'];
 
+        $resultMovies = array();
         foreach($movies as $jsonMovie){
             $movie = new Movie($jsonMovie['id'], $jsonMovie['original_title'], $jsonMovie['overview'], self::IMAGE_URL . $jsonMovie['poster_path'], $jsonMovie['original_language'], $jsonMovie['genre_ids'], $jsonMovie['release_date']);
             $resultMovies[] = $movie;
         }
+
         return $resultMovies;
+
     }
 
     public function getGenres($lang = self::DEFAULT_LANG){
@@ -34,14 +37,5 @@ class MovieDbInterface{
         return $resultGenres;
     }
 }
-
-
-
-
-
-
-
-
-
 
 ?>
