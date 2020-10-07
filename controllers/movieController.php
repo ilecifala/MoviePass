@@ -1,44 +1,64 @@
 <?php
 namespace controllers;
 use models\movie as Movie;
-use repository\movieRepository as MovieRepository;
+use daos\MovieDaos as MovieDaos;
 use api\MovieDbInterface as MoviesApi;
 
 class MovieController{
 
-    private $movieRepo;
+    private $movieDaos;
     private $api;
 
     public function __construct(){
-        $this->movieRepo = new MovieRepository();
+        $this->movieDaos = new MovieDaos();
         $this->api = new MoviesApi();
     }
 
     public function updateFromAPI(){
-
 		//TODO should check if logged and admin here?
-
-        //should this have its own controller/repo? i'd be kinda overkill and could lead to db inconsistencies
+        //should genres have their own controller/repo? i'd be kinda overkill and could lead to db inconsistencies
         $this->movieRepo->updateGenres($this->api->getGenres());
 
-        //get last 3 pages from api? idk
-        for($i=1 ; $i< 4; $i++){
-            $moviesApi = $this->api->getMovies($i);            
+        //get all movies from API and add them
+        $page = 1;
+        do{
+            $moviesApi = $this->api->getMovies($page);            
             foreach($moviesApi as $movie){
                 if(!$this->movieRepo->exists($movie->getId())){
                     $this->movieRepo->add($movie);
                 }
             }
-        }
+            $page++;
+        }while(!empty($moviesApi));
     }
 
-    public function getAll(){		
-		var_dump($this->movieRepo->getAll());
+    public function getAll($genre = "all", $year = "all"){
+
+        $movies = $this->movieDaos->getAll();
+
+        //filter by genre
+        if($genre != "all"){
+              $movies = array_filter($movies, function($movie) use($genre){
+                return in_array($genre, $movie->getGenresId());
+              });
+        }
+
+        //filter by year
+        if($year != "all"){
+            $movies = array_filter($movies, function($movie) use($year){
+              return $year ==  explode('-', $movie->getReleaseDate())[0];
+            });
+        }
+
+        //include view here
+        echo "<pre>";
+        var_dump($movies);
+        echo "</pre>";
     }
+
 
     public function getMovie($id){
-        echo $id;
-        $movie = $this->movieRepo->getById($id);
+        $movie = $this->movieDaos->getById($id);
         var_dump($movie);
     }
 

@@ -1,14 +1,23 @@
 <?php
-namespace repository;
-use repository\IRepository as IRepository;
+namespace daos;
+use daos\IDaos as IDaos;
 use models\user as User;
 
-class UserRepository implements IRepository {
+class UserDaos implements IDaos {
     private $fileName;
     private $usersList = array();
 
     public function __construct(){
         $this->fileName = ROOT . '/data/users.json';
+    }
+
+    public function getById($id){
+        foreach($this->usersList as $user){
+            if($user->getId() == $id){
+                return $user;
+            }
+        }
+        return null;
     }
 
     public function getAll(){

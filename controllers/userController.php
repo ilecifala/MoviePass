@@ -2,13 +2,13 @@
 namespace controllers;
 
 use models\user as User;
-use repository\userRepository as UserRepository;
+use daos\userDaos as UserDaos;
 
 class UserController{
-    private $repository;
+    private $daos;
 
     public function __construct(){
-        $this->repository = new UserRepository();
+        $this->daos = new UserDaos();
     }
 
     public function signup(){
@@ -18,7 +18,7 @@ class UserController{
             $name = $_POST['name'];
             $password = $_POST['password'];
             $user = new User(123,$name,$email,$password,false);
-            ($this->repository)->add($user);
+            ($this->daos)->add($user);
 
         } else {
             echo "error";
@@ -29,7 +29,7 @@ class UserController{
         if($_POST){
             $email = $_POST['email'];
             $password = $_POST['password'];
-            $user = ($this->repository)->getOne($email);
+            $user = ($this->daos)->getOne($email);
             if($user != null){
                 if ($user->getPassword() == $password)
                 {
