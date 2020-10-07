@@ -18,6 +18,28 @@ class MovieRepository implements IRepository {
         return $this->movies;
     }
 
+    public function getByGenre($genreId){
+        $movies = array();
+        foreach($this->movies as $movie){
+            if(in_array($genreId, $movie->getGenresId())){
+                $movies[] = $movie;
+            }
+        }
+        return $movies;
+    }
+
+    public function getByYear($year){
+        //TODO change this to something less awful, or just wait for sql...
+        $movies = array();
+        foreach($this->movies as $movie){
+            $movieYear = explode('-', $movie->getReleaseDate())[0];
+            if($movieYear == $year){
+                $movies[] = $movie;
+            }
+        }
+        return $movies;
+    }
+
     public function add($movie){
         array_push($this->movies,$movie);
         $this->saveData();

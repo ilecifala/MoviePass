@@ -1,8 +1,6 @@
 <?php
 namespace models;
 
-
-
 class Genre{
 
     private $id;
@@ -28,16 +26,7 @@ class Genre{
     public function setName($name){
 		$this->name = $name;
     }
-    
-
 
 }
-
-
-
-
-
-
-
 
 ?>
