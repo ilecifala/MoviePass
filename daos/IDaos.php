@@ -1,7 +1,7 @@
 <?php
-namespace repository;
+namespace daos;
 
-interface IRepository{
+interface IDaos{
     public function getAll();
     public function add($object);
     public function exists($value);

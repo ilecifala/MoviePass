@@ -3,8 +3,8 @@ namespace api;
 
 use models\movie as Movie;
 use models\genre as Genre;
-class MovieDbInterface{
 
+class MovieDbInterface{
     const ROOT_URL = "https://api.themoviedb.org/3/";
     const IMAGE_URL = "http://image.tmdb.org/t/p/w500";
     const DEFAULT_LANG = "es";
@@ -20,9 +20,7 @@ class MovieDbInterface{
             $movie = new Movie($jsonMovie['id'], $jsonMovie['original_title'], $jsonMovie['overview'], self::IMAGE_URL . $jsonMovie['poster_path'], $jsonMovie['original_language'], $jsonMovie['genre_ids'], $jsonMovie['release_date']);
             $resultMovies[] = $movie;
         }
-
         return $resultMovies;
-
     }
 
     public function getGenres($lang = self::DEFAULT_LANG){

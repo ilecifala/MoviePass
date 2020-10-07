@@ -1,11 +1,11 @@
 <?php
-namespace repository;
-use repository\IRepository as IRepository;
+namespace daos;
+use daos\IDaos as IDaos;
 use models\movie as Movie;
 
 use models\genre as Genre;
 
-class MovieRepository implements IRepository {
+class MovieDaos implements IDaos {
 
     const FILE_NAME = ROOT . "/data/movies.json";
     private $movies = array();
