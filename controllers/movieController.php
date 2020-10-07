@@ -2,35 +2,25 @@
 namespace controllers;
 use models\movie as Movie;
 use daos\MovieDaos as MovieDaos;
-use api\MovieDbInterface as MoviesApi;
+use daos\GenreDaos as GenreDaos;
 
 class MovieController{
 
     private $movieDaos;
-    private $api;
 
     public function __construct(){
         $this->movieDaos = new MovieDaos();
-        $this->api = new MoviesApi();
     }
 
-    public function updateFromAPI(){
-		//TODO should check if logged and admin here?
-        //should genres have their own controller/repo? i'd be kinda overkill and could lead to db inconsistencies
-        $this->movieRepo->updateGenres($this->api->getGenres());
+    public function update(){
+        //TODO check if logged and admin
 
-        //get all movies from API and add them
-        $page = 1;
-        do{
-            $moviesApi = $this->api->getMovies($page);            
-            foreach($moviesApi as $movie){
-                if(!$this->movieRepo->exists($movie->getId())){
-                    $this->movieRepo->add($movie);
-                }
-            }
-            $page++;
-        }while(!empty($moviesApi));
+        $genreDaos = new GenreDaos();
+        $genreDaos->updateFromAPI();
+
+        $this->movieDaos->updateFromAPI();
     }
+
 
     public function getAll($genre = "all", $year = "all"){
 
@@ -63,3 +53,4 @@ class MovieController{
     }
 
 }
+

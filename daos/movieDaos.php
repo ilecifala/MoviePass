@@ -1,8 +1,8 @@
 <?php
 namespace daos;
 use daos\IDaos as IDaos;
+use daos\genreDaos as GenreDaos;
 use models\movie as Movie;
-
 use models\genre as Genre;
 
 class MovieDaos implements IDaos {
@@ -11,13 +11,15 @@ class MovieDaos implements IDaos {
     private $movies = array();
 
     public function __construct(){
-        $this->retrieveData();        
+        $this->retrieveData();
     }
 
+    //return all movies from array
     public function getAll(){
         return $this->movies;
     }
 
+    //return all movies from a genre
     public function getByGenre($genreId){
         $movies = array();
         foreach($this->movies as $movie){
@@ -28,6 +30,7 @@ class MovieDaos implements IDaos {
         return $movies;
     }
 
+    //return all movies from a year
     public function getByYear($year){
         //TODO change this to something less awful, or just wait for sql...
         $movies = array();
@@ -45,6 +48,7 @@ class MovieDaos implements IDaos {
         $this->saveData();
     }
 
+    //return true if movie exists in db, false if it doesn't
     public function exists($id){
         foreach($this->movies as $movie){
             if($movie->getId() == $id){
@@ -54,7 +58,7 @@ class MovieDaos implements IDaos {
         return false;
     }
 
-
+    //save movie array to json file
     private function saveData(){
         $arrayToEncode = array();
         foreach($this->movies as $movie){
@@ -71,6 +75,7 @@ class MovieDaos implements IDaos {
         file_put_contents(self::FILE_NAME, $jsonContent);
     }
 
+    //load movie array from json file
     private function retrieveData(){
         if (file_exists(self::FILE_NAME)){
             $jsonContent = file_get_contents(self::FILE_NAME);
@@ -84,26 +89,47 @@ class MovieDaos implements IDaos {
     }
 
 
-    //TODO maybe move to its own repo?
-
-    const GENRES_FILE = ROOT . "/data/genres.json";
-
-    public function updateGenres($genres){
-        $arrayToEncode = array();
-        foreach($genres as $genre){
-            $valuesArray['id'] = $genre->getId();
-            $valuesArray['name'] = $genre->getName();
-            array_push($arrayToEncode,$valuesArray);
-        }
-        $jsonContent = json_encode($arrayToEncode, JSON_PRETTY_PRINT);
-        file_put_contents(self::GENRES_FILE, $jsonContent);
-    }
-
+    //return a movie by its id, null if it doens't exists
     public function getById($id){
         foreach($this->movies as $movie){
             if($movie->getId() == $id)
                 return $movie;
         }
+        return null;
+    }
+
+    //from here to end of file is all api related
+    const API_ROOT_URL = "https://api.themoviedb.org/3/";
+    const API_IMAGE_URL = "http://image.tmdb.org/t/p/w500";
+    const API_DEFAULT_LANG = "es";
+
+    public function updateFromAPI(){
+         $page = 1;
+        do{
+            $moviesApi = $this->apiGetMovies($page);            
+            foreach($moviesApi as $movie){
+                if(!$this->exists($movie->getId())){
+                    $this->add($movie);
+                }
+            }
+            $page++;
+        }while(!empty($moviesApi));
+    }
+
+    
+
+    private function apiGetMovies($page = 1, $lang = self::API_DEFAULT_LANG){
+        $url = self::API_ROOT_URL . "movie/now_playing?api_key=" . MOVIEDB_KEY . "&language=" . $lang . "&page=" . $page;
+        $resultRaw = file_get_contents($url);
+        $result = json_decode($resultRaw, true);   
+        $movies = $result['results'];
+
+        $resultMovies = array();
+        foreach($movies as $jsonMovie){
+            $movie = new Movie($jsonMovie['id'], $jsonMovie['original_title'], $jsonMovie['overview'], self::API_IMAGE_URL . $jsonMovie['poster_path'], $jsonMovie['original_language'], $jsonMovie['genre_ids'], $jsonMovie['release_date']);
+            $resultMovies[] = $movie;
+        }
+        return $resultMovies;
     }
 
 
