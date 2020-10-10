@@ -1,23 +1,22 @@
 <?php
     include("header.php");
-    use api\MovieDbInterface as api;
-    $api = new api();
+    include("nav.php");
+    use controllers\movieController as MovieController;
+    $movies = new MovieController();
+    //$movies->update();
+    
 ?>
 <main>
-    <h1 class="indexTitle">Cartelera</h1>
-    <h2>Ordenar Por: </h2>
-    <form action="order/byDate">
-        <input type="submit" value="Fecha">
-        <input type="submit" value="Categoria"> 
+<h1 class="indexTitle">Cartelera</h1>
+    <h2>Buscar por: </h2>
+    <form action="movie/getAll">
+        <br>Categoría <input type="text" name='genre'>
+        <br>Año <input type="text" name='year'> 
+        <button>Buscar</button>
     </form>
-    <div class="moviesList">
-        <form action="selection/selectMovie" method="POST">
-        <?php
-            $movies = $api->getMovies(1);
-            foreach($movies as $movie){
-                ?> <a class="movieButton" href="movie/getMovie/<?= $movie->getId()?>"><img src="<?= $movie->getImg(); ?>" alt="<?= $movie->getTitle();?>"  width="200px"></a>
-            <?php } ?>
-        </form>
-    </div>
+    <?php
+    $movies->getAll();
+    include('moviesList.php');
+    ?>
 </main>
 <?php include("footer.php"); ?>

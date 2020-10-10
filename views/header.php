@@ -6,5 +6,6 @@
     <link rel="stylesheet" href="<?= CSS_PATH . "style.css" ?>">
     <title>MoviePass</title>
 </head>
+<?php //include("nav.php"); ?>
 <body>
-<?php include("nav.php"); ?>
+

@@ -25,6 +25,14 @@ class MovieController{
     public function getAll($genre = "all", $year = "all"){
 
         $movies = $this->movieDaos->getAll();
+        if($_GET){
+            if($_GET['year'] == ''){
+                $year = 'all';
+            }
+            if ($_GET['genre'] == ''){
+                $genre = 'all';
+            }
+        }
 
         //filter by genre
         if($genre != "all"){
@@ -40,10 +48,17 @@ class MovieController{
             });
         }
 
+        //echo 'movieController/getAll y los parametros: genre: ' . $genre . ' | year: ' . $year;
         //include view here
-        echo "<pre>";
-        var_dump($movies);
-        echo "</pre>";
+        //echo "<pre>";
+        //var_dump($movies);
+        //echo "</pre>";
+        
+        if (empty($movies)){
+            echo 'no se encontraron resultados';
+        }
+        
+        include('views/moviesList.php');
     }
 
 
