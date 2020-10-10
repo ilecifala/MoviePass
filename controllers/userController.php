@@ -12,6 +12,7 @@ class UserController{
     }
 
     public function signup(){
+        
         if($_POST){
             //generar ID
             $email = $_POST['email'];
@@ -19,10 +20,9 @@ class UserController{
             $password = $_POST['password'];
             $user = new User(123,$name,$email,$password,false);
             ($this->daos)->add($user);
-
-        } else {
-            echo "error";
         }
+
+        header('location: signup.php');
     }
 
     public function login(){
@@ -33,6 +33,7 @@ class UserController{
             if($user != null){
                 if ($user->getPassword() == $password)
                 {
+                    $_SESSION['loggedUser'] = $user;
                     echo 'acceso permitido';
                 }
                 else {
@@ -41,9 +42,8 @@ class UserController{
             } else {
                 echo 'usuario no encontrado';
             }
-        } else {
-            echo "error";
         }
+        include('views/login.php');
     }
 }
 
