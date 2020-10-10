@@ -130,6 +130,7 @@ class MovieDaos implements IDaos {
             $resultMovies[] = $movie;
         }
         return $resultMovies;
+ 
     }
 
 

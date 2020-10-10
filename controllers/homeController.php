@@ -1,8 +1,6 @@
 <?php
 namespace controllers;
 
-use api\MovieDbInterface as api;
-
 class HomeController{
 
     public function index(){
@@ -10,7 +8,9 @@ class HomeController{
         //TODO mostrar peliculas
         //$api = new api();
         //$api->getFullMovies();  
-        include("views/index.php");
+        //include("views/index.php");
+
+        header("Location: movie/show");
     }
 }
 

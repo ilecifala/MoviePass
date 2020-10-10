@@ -57,7 +57,7 @@ class UserDaos implements IDaos {
             $valuesArray['name'] = $user->getName();
             $valuesArray['email'] = $user->getEmail();
             $valuesArray['password'] = $user->getPassword();
-            $valuesArray['isAdmin'] = $user->getIsAdmin();
+            $valuesArray['isAdmin'] = $user->isAdmin();
             array_push($arrayToEncode,$valuesArray);
         }
         $jsonContent = json_encode($arrayToEncode, JSON_PRETTY_PRINT);
@@ -77,7 +77,7 @@ class UserDaos implements IDaos {
                 $user->setName($valuesArray['name']);
                 $user->setEmail($valuesArray['email']);
                 $user->setPassword($valuesArray['password']);
-                $user->setIsAdmin($valuesArray['isAdmin']);
+                $user->setAdmin($valuesArray['isAdmin']);
                 array_push($this->usersList, $user);
             }
         }

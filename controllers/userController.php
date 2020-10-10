@@ -33,6 +33,7 @@ class UserController{
             if($user != null){
                 if ($user->getPassword() == $password)
                 {
+                    $_SESSION['user'] = $user;
                     echo 'acceso permitido';
                 }
                 else {
@@ -41,9 +42,14 @@ class UserController{
             } else {
                 echo 'usuario no encontrado';
             }
-        } else {
-            echo "error";
         }
+
+        require_once(VIEWS_PATH . "form.php");
+    }
+
+    public function logout(){
+        $_SESSION['user'] = null;
+        $this->login();
     }
 }
 
