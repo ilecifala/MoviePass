@@ -1,8 +1,16 @@
 <nav class="navBar">
      <div>
           *logo*
+          <?php 
+          if(isset($_SESSION['user'])){
+               echo 'Bienvenido, ' . $_SESSION['user']->getName();
+          }
+          ?>
      </div>
      <ul class="navList">
+     <li class="navItem">
+               <a class="navLink" href="home/index">Home</a>
+          </li>
           <li class="navItem">
                <a class="navLink" href="<?=FRONT_ROOT?>">Inicio</a>
           </li>
@@ -30,6 +38,7 @@
           </li>
           <li class="navItem">
                <a class="navLink" href="#">Registrar</a>
+
           </li>
           <?php }?>
           

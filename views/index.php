@@ -1,5 +1,3 @@
-<?php
-?>
 <main>
     <h1 class="indexTitle">Cartelera</h1>
     <h2>Ver Por: </h2>

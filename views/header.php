@@ -17,5 +17,6 @@
 
     <title><?php echo (isset($title)) ? $title : "Movie Pass"?></title>
 </head>
+<?php //include("nav.php"); ?>
 <body>
-<?php include("nav.php"); ?>
+

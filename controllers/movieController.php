@@ -32,6 +32,7 @@ class MovieController{
         $movies = $this->movieDaos->getAll();
         $genres = $this->genreDaos->getAll(); //this is used later in the view to display a dropdown
 
+
         //filter by genre
         if($genreRequired != "all"){
               $movies = array_filter($movies, function($movie) use($genreRequired){
@@ -45,6 +46,7 @@ class MovieController{
               return $yearRequired ==  explode('-', $movie->getReleaseDate())[0];
             });
         }
+
 
         //pagination?
         $total = count($movies);

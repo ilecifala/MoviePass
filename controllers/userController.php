@@ -12,6 +12,7 @@ class UserController{
     }
 
     public function signup(){
+        
         if($_POST){
             //generar ID
             $email = $_POST['email'];
@@ -19,6 +20,7 @@ class UserController{
             $password = $_POST['password'];
             $user = new User(123,$name,$email,$password,false);
             ($this->daos)->add($user);
+
             require_once(VIEWS_PATH . "header.php");
             require_once(VIEWS_PATH . "signup.php");
             require_once(VIEWS_PATH . "footer.php");
@@ -37,13 +39,16 @@ class UserController{
                 if ($user->getPassword() == $password){
                     $_SESSION['user'] = $user;
                     require_once(VIEWS_PATH . "header.php");
-                    require_once(VIEWS_PATH . "login.php");
+                    require_once(VIEWS_PATH . "login.php"); //acá tendría que ir otra vista, o llamar o movieController->show() o algo así, no sé.
                     require_once(VIEWS_PATH . "footer.php");
-                }
-                else {
+                    return;
+
+                }else {
+                    //TODO
                     echo 'contraseña incorrecta';
                 }
             } else {
+                //TODO
                 echo 'usuario no encontrado';
             }
         }
