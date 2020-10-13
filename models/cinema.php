@@ -14,7 +14,7 @@ class Cinema{
     private $province;
     private $ticketPrice;
 
-    public function __construct($name, $capacity, $address1, $address2, $city, $postal, $province, $ticketPrice){
+    public function __construct($name = "vacio", $capacity = -1, $address1 = "vacio", $address2 = "vacio", $city = "vacio", $postal = -1, $province = "vacio", $ticketPrice = "vacio"){
         $this->id = uniqid();
         $this->name = $name;
         $this->capacity = $capacity;

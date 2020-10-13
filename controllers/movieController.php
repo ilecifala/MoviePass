@@ -22,7 +22,8 @@ class MovieController{
 
         
     public function index(){
-        header("Location: show");
+        //header("Location: show");
+        $this->show();
     }
 
 
@@ -45,8 +46,19 @@ class MovieController{
             });
         }
 
+        //pagination?
+        $total = count($movies);
+        $limit = 8;
+        $totalPages = ceil($total / $limit);
+        $page = max($page, 1);
+        $page = min($page, $totalPages);
+        $offset = ($page - 1) * $limit;
+        if($offset < 0) $offset = 0;
 
-        $movies = array_slice($movies, 0, 12);
+        $movies = array_slice($movies, $offset, $limit);
+
+
+        //$movies = array_slice($movies, 0, 12);
         
 
         require_once(VIEWS_PATH . "header.php");

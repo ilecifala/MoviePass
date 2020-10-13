@@ -19,6 +19,9 @@ class UserController{
             $password = $_POST['password'];
             $user = new User(123,$name,$email,$password,false);
             ($this->daos)->add($user);
+            require_once(VIEWS_PATH . "header.php");
+            require_once(VIEWS_PATH . "signup.php");
+            require_once(VIEWS_PATH . "footer.php");
 
         } else {
             echo "error";
@@ -31,10 +34,11 @@ class UserController{
             $password = $_POST['password'];
             $user = ($this->daos)->getOne($email);
             if($user != null){
-                if ($user->getPassword() == $password)
-                {
+                if ($user->getPassword() == $password){
                     $_SESSION['user'] = $user;
-                    echo 'acceso permitido';
+                    require_once(VIEWS_PATH . "header.php");
+                    require_once(VIEWS_PATH . "login.php");
+                    require_once(VIEWS_PATH . "footer.php");
                 }
                 else {
                     echo 'contraseña incorrecta';
@@ -43,8 +47,11 @@ class UserController{
                 echo 'usuario no encontrado';
             }
         }
+        require_once(VIEWS_PATH . "header.php");
+        require_once(VIEWS_PATH . "login.php");
+        require_once(VIEWS_PATH . "footer.php");
 
-        require_once(VIEWS_PATH . "form.php");
+       
     }
 
     public function logout(){
