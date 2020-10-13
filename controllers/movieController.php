@@ -14,10 +14,19 @@ class MovieController{
     }
 
     public function update(){
-        //TODO check if logged and admin
+
+        if($_SESSION['user'] == null || !$_SESSION['user']->isAdmin()){
+            header("HTTP/1.1 403");
+            //or redirect to login, idk
+            //$c = new UserController();
+            //$c->login();            
+            return;
+        }
+
 
         $this->genreDaos->updateFromAPI();
         $this->movieDaos->updateFromAPI();
+        $this->show();
     }
 
         
@@ -27,7 +36,7 @@ class MovieController{
     }
 
 
-    public function show($genreRequired = "all", $yearRequired = "all", $page = 1){
+    public function show($genreRequired = "all", $yearRequired = "all", int $page = 1){
 
         $movies = $this->movieDaos->getAll();
         $genres = $this->genreDaos->getAll(); //this is used later in the view to display a dropdown
@@ -48,20 +57,14 @@ class MovieController{
         }
 
 
-        //pagination?
-        $total = count($movies);
-        $limit = 8;
-        $totalPages = ceil($total / $limit);
-        $page = max($page, 1);
-        $page = min($page, $totalPages);
+        //pagination
+        $limit = 16;//limit to show per page
+        $totalMovies = count($movies);
+        $totalPages = intval(ceil($totalMovies / $limit));
         $offset = ($page - 1) * $limit;
         if($offset < 0) $offset = 0;
 
         $movies = array_slice($movies, $offset, $limit);
-
-
-        //$movies = array_slice($movies, 0, 12);
-        
 
         require_once(VIEWS_PATH . "header.php");
         require_once(VIEWS_PATH . "index.php");
