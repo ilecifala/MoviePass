@@ -1,71 +1,79 @@
 <?php
 namespace controllers;
-use models\movie as Movie;
 use daos\MovieDaos as MovieDaos;
 use daos\GenreDaos as GenreDaos;
 
 class MovieController{
 
     private $movieDaos;
+    private $genreDaos;
 
     public function __construct(){
         $this->movieDaos = new MovieDaos();
+        $this->genreDaos = new GenreDaos();
     }
 
     public function update(){
         //TODO check if logged and admin
 
-        $genreDaos = new GenreDaos();
-        $genreDaos->updateFromAPI();
-
+        $this->genreDaos->updateFromAPI();
         $this->movieDaos->updateFromAPI();
     }
 
+        
+    public function index(){
+        //header("Location: show");
+        $this->show();
+    }
 
-    public function getAll($genre = "all", $year = "all"){
+
+    public function show($genreRequired = "all", $yearRequired = "all", $page = 1){
 
         $movies = $this->movieDaos->getAll();
-        if($_GET){
-            if($_GET['year'] == ''){
-                $year = 'all';
-            }
-            if ($_GET['genre'] == ''){
-                $genre = 'all';
-            }
-        }
+        $genres = $this->genreDaos->getAll(); //this is used later in the view to display a dropdown
+
 
         //filter by genre
-        if($genre != "all"){
-              $movies = array_filter($movies, function($movie) use($genre){
-                return in_array($genre, $movie->getGenresId());
+        if($genreRequired != "all"){
+              $movies = array_filter($movies, function($movie) use($genreRequired){
+                return in_array($genreRequired, $movie->getGenresId());
               });
         }
 
         //filter by year
-        if($year != "all"){
-            $movies = array_filter($movies, function($movie) use($year){
-              return $year ==  explode('-', $movie->getReleaseDate())[0];
+        if($yearRequired != "all"){
+            $movies = array_filter($movies, function($movie) use($yearRequired){
+              return $yearRequired ==  explode('-', $movie->getReleaseDate())[0];
             });
         }
 
-        //echo 'movieController/getAll y los parametros: genre: ' . $genre . ' | year: ' . $year;
-        //include view here
-        //echo "<pre>";
-        //var_dump($movies);
-        //echo "</pre>";
+
+        //pagination?
+        $total = count($movies);
+        $limit = 8;
+        $totalPages = ceil($total / $limit);
+        $page = max($page, 1);
+        $page = min($page, $totalPages);
+        $offset = ($page - 1) * $limit;
+        if($offset < 0) $offset = 0;
+
+        $movies = array_slice($movies, $offset, $limit);
+
+
+        //$movies = array_slice($movies, 0, 12);
         
-        if (empty($movies)){
-            echo 'no se encontraron resultados';
-        }
-        
-        include('views/moviesList.php');
+
+        require_once(VIEWS_PATH . "header.php");
+        require_once(VIEWS_PATH . "index.php");
+        require_once(VIEWS_PATH . "footer.php");
     }
 
 
-    public function getMovie($id){
+    public function details($id){
         $movie = $this->movieDaos->getById($id);
+        echo "<pre>";
         var_dump($movie);
+        echo "</pre>";
     }
 
 }
-

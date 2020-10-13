@@ -49,11 +49,11 @@ class User{
 		$this->password = $password;
 	}
 
-	public function getIsAdmin(){
+	public function isAdmin(){
 		return $this->isAdmin;
 	}
 
-	public function setIsAdmin($isAdmin){
+	public function setAdmin($isAdmin){
 		$this->isAdmin = $isAdmin;
 	}
 }
