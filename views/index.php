@@ -26,20 +26,39 @@
         
         <?php } ?>
     </div>
-
-    <nav aria-label="Page navigation example">
+    <br>
+    <nav>
       <ul class="pagination justify-content-center">
         <?php if($offset != 0){?>
-        <li class="page-item disabled">
-          <a class="page-link" href="#" tabindex="-1">Previous</a>
-        </li>
-        <?php } ?>
-        <?php for($i=1;$i<$page+1;$i++){?>
-        <li class="page-item"><a class="page-link" href="#"><?=$i?></a></li>
-        <?php } ?>
         <li class="page-item">
-          <a class="page-link" href="#">Next</a>
+          <a class="page-link" href="<?= FRONT_ROOT . "movie/show/" . $genreRequired. "/" . $yearRequired . "/" . ($page-1)?>" >Previous</a>
         </li>
+        <?php } ?>
+        <?php //this could probably be optimized 
+        for($i=$page-3; $i < $page;$i++){
+          if($i > 0 ){?>
+          <li class="page-item">
+            <a class="page-link" href="<?= FRONT_ROOT . "movie/show/" . $genreRequired. "/" . $yearRequired . "/" . $i?>"><?=$i?></a>
+          </li>
+        <?php } }?>
+
+          <li class="page-item active">
+            <a class="page-link" href=""><?=$page?></a>
+          </li>
+
+          <?php for($i=$page+1; $i < $page+3;$i++){
+          if($i <= $totalPages ){?>
+          <li class="page-item">
+            <a class="page-link" href="<?= FRONT_ROOT . "movie/show/" . $genreRequired. "/" . $yearRequired . "/" . $i?>"><?=$i?></a>
+          </li>
+        <?php } }?>
+
+
+        <?php if($page < $totalPages){?>
+        <li class="page-item">
+          <a class="page-link" href="<?= FRONT_ROOT . "movie/show/" . $genreRequired. "/" . $yearRequired . "/" . ($page+1)?>">Next</a>
+        </li>
+        <?php }?>
     </ul>
     </nav>
 </main>
