@@ -20,13 +20,15 @@ class UserController{
             $password = $_POST['password'];
             $user = new User(123,$name,$email,$password,false);
             ($this->daos)->add($user);
-
+            
             require_once(VIEWS_PATH . "header.php");
-            require_once(VIEWS_PATH . "signup.php");
+            require_once(VIEWS_PATH . "login.php");
             require_once(VIEWS_PATH . "footer.php");
 
         } else {
-            echo "error";
+            require_once(VIEWS_PATH . "header.php");
+            require_once(VIEWS_PATH . "signup.php");
+            require_once(VIEWS_PATH . "footer.php");
         }
     }
 

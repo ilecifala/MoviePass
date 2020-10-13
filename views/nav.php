@@ -8,9 +8,7 @@
           ?>
      </div>
      <ul class="navList">
-     <li class="navItem">
-               <a class="navLink" href="home/index">Home</a>
-          </li>
+
           <li class="navItem">
                <a class="navLink" href="<?=FRONT_ROOT?>">Inicio</a>
           </li>
@@ -37,7 +35,7 @@
                <a class="navLink" href="<?=FRONT_ROOT?>user/login">Log in</a>
           </li>
           <li class="navItem">
-               <a class="navLink" href="#">Registrar</a>
+               <a class="navLink" href="<?=FRONT_ROOT?>user/signup">Registrar</a>
 
           </li>
           <?php }?>
