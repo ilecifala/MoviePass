@@ -3,18 +3,21 @@ namespace models;
 
 class User{
 	private $id;
-	private $name;
+	private $firstName;
+	private $lastName;
     private $email;
     private $password;
-    private $isAdmin;
-    //private $dni;
+    private $dni;
+    private $idRol;
 
-    public function __construct($id = '', $name = '', $email = '', $password = '', $isAdmin = ''){
+    public function __construct($id = '', $firstName = '', $lastName ='', $email = '', $password = '', $dni = '', $idRol = ''){
 		$this->id = $id;
-		$this->name = $name;
+		$this->firstName = $firstName;
+		$this->lastName = $lastName;
         $this->email = $email;
-        $this->password = $password;
-        $this->isAdmin = $isAdmin;
+		$this->password = $password;
+        $this->dni = $dni;
+		$this->idRol = $idRol;
     }
 
     public function getId(){
@@ -25,12 +28,20 @@ class User{
 		$this->id = $id;
 	}
 	
-	public function getName(){
-		return $this->name;
+	public function getFirstName(){
+		return $this->firstName;
 	}
 
-	public function setName($name){
-		$this->name = $name;
+	public function setFirstName($name){
+		$this->firstName = $firstName;
+	}
+
+	public function getLastName(){
+		return $this->lastName;
+	}
+
+	public function setLastName($lastName){
+		$this->lastName = $lastName;
 	}
 
 	public function getEmail(){
@@ -49,12 +60,20 @@ class User{
 		$this->password = $password;
 	}
 
-	public function isAdmin(){
-		return $this->isAdmin;
+	public function setDni($dni){
+		$this->dni = $dni;
 	}
 
-	public function setAdmin($isAdmin){
-		$this->isAdmin = $isAdmin;
+	public function getDni(){
+		return $this->dni;
+	}
+
+	public function idRol(){
+		return $this->idRol;
+	}
+
+	public function setIdRol($idRol){
+		$this->idRol = $idRol;
 	}
 }
 
