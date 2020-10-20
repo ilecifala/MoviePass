@@ -123,7 +123,6 @@ abstract class BaseDaos{
         }
     }
 
-
     protected function _getByProperty($value, $property){
         try{
             //get array from db
@@ -146,6 +145,30 @@ abstract class BaseDaos{
                 return false;
             }            
         } catch (\Exception $ex){
+            throw $ex;
+        }
+    }
+
+    protected function _getAllByProperty($value, $property){
+        try {
+            $result = array();
+            $query = "SELECT * FROM $this->table WHERE {$property}_$this->className = $value";
+            $this->connection = Connection::getInstance();
+            $resultSet = $this->connection->executeWithAssoc($query);
+
+            foreach($resultSet as $row){
+                $object = new $this->class();
+                foreach($row as $column=>$value){
+                    $property = explode('_', $column)[0];
+                    $method = new ReflectionMethod($this->class, 'set' . ucfirst($property));
+                    $method->invoke($object, $value);
+                }
+                array_push($result, $object);
+            }        
+
+            return $result;
+        }
+        catch(\Exception $ex){
             throw $ex;
         }
     }

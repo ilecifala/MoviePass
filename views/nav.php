@@ -21,9 +21,6 @@
                          <a class="navLink" href="<?=FRONT_ROOT?>movie/update">Actualizar peliculas</a>                         
                     </li>
                     <li class="navItem">
-                         <a class="navLink" href="<?=FRONT_ROOT?>room">Administrar salas</a>                         
-                    </li>
-                    <li class="navItem">
                          <a class="navLink" href="<?=FRONT_ROOT?>cinema">Administrar cines</a>                         
                     </li>
                </ul>

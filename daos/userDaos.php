@@ -27,8 +27,12 @@ class UserDaos extends BaseDaos {
         return parent::_getByProperty($email, 'email');
     }
 
-    public function add($cinema){
-        return parent::_add($cinema);
+    public function add($user){
+        return parent::_add($user);
+    }
+
+    public function modify($user){
+        return parent::_modify($user, $user->getId(), 'id');
     }
 
 }

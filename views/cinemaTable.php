@@ -43,6 +43,10 @@
                             <input type="hidden" name="id" value="<?=$cinema->getId()?>">
                             <button class="material-icons" onclick="this.form.submit()">&#xE872;</i> 
                         </form>
+                        <form action="<?=FRONT_ROOT?>room" method="post">
+                            <input type="hidden" name="idCinema" value="<?=$cinema->getId()?>">
+                            <button class="material-icons" onclick="this.form.submit()">&#xE254;</i>                             
+                        </form>
                     </td>
                 </tr>
                 <?php }?>    
@@ -50,5 +54,3 @@
         </table>
     </div>
 </div>
-<?php
-include('defaultModal.php');?>

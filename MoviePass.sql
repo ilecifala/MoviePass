@@ -48,7 +48,7 @@ create table cinemas (id_cinema int auto_increment,
                      constraint pk_idCinema primary key (id_cinema),
                      constraint unq_cinema unique (name_cinema, address_cinema));
                      
-create table room (id_room int auto_increment,
+create table rooms (id_room int auto_increment,
                     name_room varchar(50) not null,
                     price_room float not null,
                     capacity_room int not null,
@@ -57,8 +57,14 @@ create table room (id_room int auto_increment,
                     constraint fk_idCinema foreign key(idCinema_room) references cinemas(id_cinema));
 
 
-
-
+create table shows (id_show int auto_increment,
+                    idMovie_show int not null,
+                    datetime_show datetime not null,
+                    idRoom_show int not null,
+                    constraint pk_idShow primary key(id_show),
+                    constraint fk_idMovie foreign key(idMovie_show) references movies(id_movie),
+                    constraint fk_idRoom foreign key(idRoom_show) references rooms(id_room)
+                    );
 
 
 INSERT INTO rols (id_rol, description_rol) VALUES (1, 'admin');
