@@ -28,12 +28,24 @@ class MovieDaos extends BaseDaos{
         return parent::_add($movie, true);
     }
 
-    public function update(){
+    public function getMoviesFromGenreAndYear($genre, $year){
+        "SELECT * FROM movies WHERE genre = :genre and year = :year;";
+        
+            $this->connection = Connection::getInstance();
+
+    }
+
+    public function update($lang = self::API_DEFAULT_LANG){
         $page = 1;
         do{
             $moviesApi = $this->updateFromApi($page);            
             foreach($moviesApi as $movie){
                 if(!$this->exists($movie->getId())){
+                    //get duration
+                    $url = self::API_ROOT_URL . "movie/{$movie->getId()}}?api_key=" . MOVIEDB_KEY . "&language=$lang";
+                    $resultRaw = file_get_contents($url);
+                    $runtime = json_decode($resultRaw, true)['runtime'];
+                    $movie->setDuracion($runtime);
                     $this->add($movie);
                 }
             }
@@ -52,13 +64,7 @@ class MovieDaos extends BaseDaos{
 
         $resultMovies = array();
 
-        foreach($movies as $jsonMovie){            
-
-            //get duration
-            $url = self::API_ROOT_URL . "movie/{$jsonMovie['id']}?api_key=" . MOVIEDB_KEY . "&language=$lang";
-            $resultRaw = file_get_contents($url);
-            $runtime = json_decode($resultRaw, true)['runtime'];
-
+        foreach($movies as $jsonMovie){
             $movie = new Movie($jsonMovie['id'], $jsonMovie['original_title'], $jsonMovie['overview'], self::API_IMAGE_URL . $jsonMovie['poster_path'], $jsonMovie['original_language'], serialize($jsonMovie['genre_ids']), $jsonMovie['release_date'], $runtime);
             $resultMovies[] = $movie;
         }

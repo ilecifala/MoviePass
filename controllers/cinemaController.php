@@ -71,6 +71,7 @@ class CinemaController{
 
 
     public function modify($id){
+ 
         //check if user is logged and has admin privileges
         if($_SESSION['user'] == null || $_SESSION['user']->getIdRol() != 1){
             header("HTTP/1.1 403");           

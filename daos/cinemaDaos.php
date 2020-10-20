@@ -29,5 +29,9 @@ class CinemaDaos extends BaseDaos{
     public function remove($id){
         return parent::_remove($id, 'id');
     }
+
+    public function modify($cinema){
+        return parent::_modify($cinema, $cinema->getId(), "id");
+    }
 }
 ?>

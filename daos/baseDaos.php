@@ -12,7 +12,7 @@ abstract class BaseDaos{
     private $className;
     private $reflectionClass;
 
-    protected function __construct($table, $class){
+    protected function __construct($table, $class){ //users,cinema
         $this->table = $table;
         $this->className = strtolower($class);
         $this->class = '\\models\\'.strtolower($class);
@@ -51,7 +51,7 @@ abstract class BaseDaos{
     protected function _add($object, $withId = false){
         try{
                 //start creating query
-                $query = "INSERT INTO " . $this->table . " (";
+                $query = "INSERT INTO " . $this->table . " ("; //id, name, lastname) values (:id, :name, :lastname)
 
                 //get class properties
                 $properties = $this->reflectionClass->getProperties(ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED);              
@@ -69,7 +69,7 @@ abstract class BaseDaos{
                         $parameters[$property ."_". $this->className] = $value;
                     }
                 }
-
+                
                 //add "_{objectClass}" to all properties
                 array_walk($properties, function(&$value, $key) { $value->name .= '_' . $this->className; } );
 
@@ -123,11 +123,12 @@ abstract class BaseDaos{
         }
     }
 
+
     protected function _getByProperty($value, $property){
         try{
             //get array from db
             $query = "SELECT * FROM $this->table WHERE {$property}_$this->className = :{$property}_$this->className;";
-            
+
             $this->connection = Connection::getInstance();
             $parameters["{$property}_$this->className"] = $value;            
             $resultSet = $this->connection->executeWithAssoc($query, $parameters);
@@ -160,6 +161,47 @@ abstract class BaseDaos{
         } catch(\Exception $ex){
             throw $ex;
         }
+    }
+
+    protected function _modify($object, $_value, $_property = 'id'){
+
+        $query = "UPDATE " . $this->table . " SET ";
+
+        //get class properties
+        $properties = $this->reflectionClass->getProperties(ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED);              
+        
+        //get column names from property names
+        $columns = array_column($properties, 'name');
+
+        //retrieve values from object instance 
+        $parameters = array();
+        foreach($columns as $property){
+            //call getters
+            if($property != "id"){
+                $method = new ReflectionMethod($this->class, 'get' . ucfirst($property));
+                $value = $method->invoke($object);
+                $parameters[$property ."_". $this->className] = $value;
+            }
+        }        
+        
+        //add columns to query
+        foreach($parameters as $column => $value){
+            $query .= "$column = :$column,";
+        }
+
+        //remove last comma
+        $query = substr($query, 0, -1);
+
+        //add where to query
+        $query .= " WHERE {$_property}_$this->className = $_value";     
+
+        //call db
+        $this->connection = Connection::getInstance();
+
+        $this->connection->ExecuteNonQuery($query, $parameters);
+
+
+
     }
 }
 
