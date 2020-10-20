@@ -22,13 +22,10 @@
                     <input class="form-control" name="ticket" type="number" value="<?php if(isset($cinema)) echo $cinema->getTicketPrice()?>"  min="0" size="20">
                 </div>
                 <div class="form-group">
-                    <label>Dirección linea 1<span class="asteriskField">*</span></label>
-                    <input class="form-control" name="address1" type="text" value="<?php if(isset($cinema)) echo $cinema->getAddress1()?>" size="20">
+                    <label>Dirección<span class="asteriskField">*</span></label>
+                    <input class="form-control" name="address" type="text" value="<?php if(isset($cinema)) echo $cinema->getAddress()?>" size="20">
                 </div>
-                <div class="form-group">
-                    <label>Dirección linea 2</label>
-                    <input class="form-control" name="address2" type="text" value="<?php if(isset($cinema)) echo $cinema->getAddress2()?>" size="20">
-                </div>
+
                 <div class="form-group">
                     <label>Ciudad<span class="asteriskField">*</span></label>
                     <input class="form-control" name="city" type="text" value="<?php if(isset($cinema)) echo $cinema->getCity()?>" size="20">                        
@@ -36,7 +33,7 @@
                 
                 <div class="form-group">
                     <label>Código postal<span class="asteriskField">*</span></label>
-                    <input class="form-control" name="postal" type="number"  min="0" value="<?php if(isset($cinema)) echo $cinema->getPostal()?>" size="20" >
+                    <input class="form-control" name="postal" type="number"  min="0" value="<?php if(isset($cinema)) echo $cinema->getZip()?>" size="20" >
                 </div>
                 <div class="form-group">
                     <label>Provincia<span class="asteriskField">*</span></label>

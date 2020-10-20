@@ -3,21 +3,14 @@ namespace models;
 
 class User{
 	private $id;
-	private $firstName;
-	private $lastName;
     private $email;
-    private $password;
-    private $dni;
+    private $password;    
     private $idRol;
 
-    public function __construct($id = '', $firstName = '', $lastName ='', $email = '', $password = '', $dni = '', $idRol = ''){
-		$this->id = $id;
-		$this->firstName = $firstName;
-		$this->lastName = $lastName;
-        $this->email = $email;
+    public function __construct($email = '', $password = '', $idRol = -1){
+		$this->email = $email;
 		$this->password = $password;
-        $this->dni = $dni;
-		$this->idRol = $idRol;
+        $this->idRol = $idRol;
     }
 
     public function getId(){
@@ -26,22 +19,6 @@ class User{
 
 	public function setId($id){
 		$this->id = $id;
-	}
-	
-	public function getFirstName(){
-		return $this->firstName;
-	}
-
-	public function setFirstName($name){
-		$this->firstName = $firstName;
-	}
-
-	public function getLastName(){
-		return $this->lastName;
-	}
-
-	public function setLastName($lastName){
-		$this->lastName = $lastName;
 	}
 
 	public function getEmail(){
@@ -60,15 +37,8 @@ class User{
 		$this->password = $password;
 	}
 
-	public function setDni($dni){
-		$this->dni = $dni;
-	}
 
-	public function getDni(){
-		return $this->dni;
-	}
-
-	public function idRol(){
+	public function getIdRol(){
 		return $this->idRol;
 	}
 

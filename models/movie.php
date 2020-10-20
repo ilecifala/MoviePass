@@ -7,18 +7,18 @@ class Movie{
 	private $title;
 	private $overview;
     private $img;
-    private $originalLanguage;
-    private $genresId;
+    private $language;
+    private $genreIds;
 	private $releaseDate;
 	private $duration;
 
-    public function __construct($id = '', $title = '', $overview = '', $img = '', $originalLanguage = '', $genresId = '', $releaseDate = '', $duration = ''){
-        $this->id = $id;
+    public function __construct($id = -1, $title = '', $overview = '', $img = '', $language = '', $genreIds = '', $releaseDate = '', $duration = ''){
+		$this->id = $id;
 		$this->title = $title;
 		$this->overview = $overview;
         $this->img = $img;
-        $this->originalLanguage = $originalLanguage;
-        $this->genresId = $genresId;
+        $this->language = $language;
+        $this->genreIds = $genreIds;
 		$this->releaseDate = $releaseDate;
 		$this->duration = $duration;
     }
@@ -47,7 +47,6 @@ class Movie{
 		$this->overview = $overview;
 	}
 
-
 	public function getImg(){
 		return $this->img;
 	}
@@ -56,20 +55,20 @@ class Movie{
 		$this->img = $img;
 	}
 
-	public function getOriginalLanguage(){
-		return $this->originalLanguage;
+	public function getLanguage(){
+		return $this->language;
 	}
 
-	public function setOriginalLanguage($originalLanguage){
-		$this->originalLanguage = $originalLanguage;
+	public function setLanguage($language){
+		$this->language = $language;
 	}
 
-	public function getGenresId(){
-		return $this->genresId;
+	public function getGenreIds(){
+		return $this->genreIds;
 	}
 
-	public function setGenresId($genresId){
-		$this->genresId = $genresId;
+	public function setGenreIds($genreIds){
+		$this->genreIds = $genreIds;
 	}
 
 	public function getReleaseDate(){
