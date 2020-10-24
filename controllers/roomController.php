@@ -1,35 +1,35 @@
 <?php
 namespace controllers;
+use daos\roomDaos as RoomDaos;
 use daos\cinemaDaos as CinemaDaos;
-use models\cinema as Cinema;
+use models\room as Room;
 
-class CinemaController{
-    private $cinemaDaos;
+class RoomController{
+    private $roomDaos;
 
     public function __construct(){
+        $this->roomDaos = new RoomDaos();
         $this->cinemaDaos = new CinemaDaos();
     }
 
-    public function index(){
-
+    public function show($id){
         //check if user is logged and has admin privileges
         if($_SESSION['user'] == null || $_SESSION['user']->getIdRol() != 1){
             header("HTTP/1.1 403");           
             return;
         }
 
+        $cinema = $this->cinemaDaos->getById($id);
+        $rooms = $this->roomDaos->getByCinema($id);
 
-        $cinemas = $this->cinemaDaos->getAll();
-        $modalView = 'login.php';
         require_once(VIEWS_PATH . "header.php");
-        require_once(VIEWS_PATH . "cinemaTable.php");
+        require_once(VIEWS_PATH . "roomTable.php");
         require_once(VIEWS_PATH . "footer.php");
 
     }
 
 
     public function add(){
-
         if($_SESSION['user'] == null || $_SESSION['user']->getIdRol() != 1){
             header("HTTP/1.1 403");
             //or redirect to login, idk
@@ -37,45 +37,39 @@ class CinemaController{
             //$c->login();            
             return;
         }
-
-
+        $idCinema = $_POST['idCinema'];
         
-        if(isset($_POST['name'], $_POST['capacity'], $_POST['address'], $_POST['ticket'], $_POST['city'], $_POST['province'],$_POST['postal'])){
+        if(isset($_POST['name'], $_POST['capacity'], $_POST['ticket'])){
 
             $name = $_POST['name'];
             $capacity = $_POST['capacity'];
-            $address = $_POST['address'];
-            $city = $_POST['city'];
-            $province = $_POST['province'];
-            $postal = $_POST['postal'];
             $ticketPrice = $_POST['ticket'];
+            $idCinema = $_POST['idCinema'];
 
-            $cinema = new Cinema($name, $capacity, $address, $city, $postal, $province, $ticketPrice);
+            $room = new Room($name, $capacity, $ticketPrice, $idCinema);
 
             //check for empty fields
-            $required = array('name' => 'nombre', 'capacity' => 'capacidad', 'address' => 'dirección', 'ticket' => 'precio de entrada', 'city' => 'ciudad', 'province' => 'provincia', 'postal' => 'código postal');
+            $required = array('name' => 'nombre', 'capacity' => 'capacidad', 'ticket' => 'precio de entrada');
             foreach($required as $field => $name) {
                 if (empty($_POST[$field])) {
                   $error = ucfirst($required[$field]) . " no puede estar vacio";
                   require_once(VIEWS_PATH . "header.php");
-                  require_once(VIEWS_PATH . "addCinema.php");
+                  require_once(VIEWS_PATH . "addRoom.php");
                   require_once(VIEWS_PATH . "footer.php");
                   return;
                 }
             }
-
-            //add cinema to db
-            $this->cinemaDaos->add($cinema);
+            //add room to db
+            $this->roomDaos->add($room);
             //back to index
-            $this->index();
+            $this->show($idCinema);
         }else{
             require_once(VIEWS_PATH . "header.php");
-            require_once(VIEWS_PATH . "addCinema.php");
+            require_once(VIEWS_PATH . "addRoom.php");
             require_once(VIEWS_PATH . "footer.php");        
-        }
-        
+        }       
+    
     }
-
 
     public function modify($id){
  
@@ -84,65 +78,59 @@ class CinemaController{
             header("HTTP/1.1 403");           
             return;
         }
+        $idCinema = $_POST['idCinema'];
         //check if form was sent
-        if(isset($_POST['id'], $_POST['name'], $_POST['capacity'], $_POST['address'], $_POST['ticket'], $_POST['city'], $_POST['province'],$_POST['postal'])){
+        if(isset($_POST['id'], $_POST['name'], $_POST['capacity'], $_POST['ticket'], $_POST['idCinema'])){
 
             $id = $_POST['id'];
             $name = $_POST['name'];
             $capacity = $_POST['capacity'];
-            $address = $_POST['address'];
-            $city = $_POST['city'];
-            $province = $_POST['province'];
-            $postal = $_POST['postal'];
+            $idCinema = $_POST['idCinema'];
             $ticketPrice = $_POST['ticket'];
 
-            $cinema = new Cinema($name, $capacity, $address, $city, $postal, $province, $ticketPrice);
-            //replace new id with old id
-            $cinema->setId($_POST['id']);
+            $room = new Room($name, $capacity, $ticketPrice);
+            //replace null id with id
+            $room->setId($id);
+            //add cinema id
+            $room->setIdCinema($idCinema);
 
             //check for empty fields
-            $required = array('name' => 'nombre', 'capacity' => 'capacidad', 'address' => 'dirección', 'ticket' => 'precio de entrada', 'city' => 'ciudad', 'province' => 'provincia', 'postal' => 'código postal');
+            $required = array('name' => 'nombre', 'capacity' => 'capacidad', 'ticket' => 'precio de entrada');
             foreach($required as $field => $name) {
                 if (empty($_POST[$field])) {
                   $error = ucfirst($required[$field]) . " no puede estar vacio";
                   require_once(VIEWS_PATH . "header.php");
-                  require_once(VIEWS_PATH . "addCinema.php");
+                  require_once(VIEWS_PATH . "addRoom.php");
                   require_once(VIEWS_PATH . "footer.php");
                   return;
                 }
             }
-
             //modify cinema in db
-            $this->cinemaDaos->modify($cinema);
+            $this->roomDaos->modify($room);
             //back to index
-            $this->index();
+            $this->show($idCinema);
         }else{
             
         //get cinema from id
-        $cinema = $this->cinemaDaos->getById($id);
+        $room = $this->roomDaos->getById($id);
 
         //cinema not found
-        if(empty($cinema)){
-            $this->index();
-            return;
+        if(empty($room)){
+            //$this->show();
+            //return;
         }
         
         require_once(VIEWS_PATH . "header.php");
-        require_once(VIEWS_PATH . "addCinema.php");
+        require_once(VIEWS_PATH . "addRoom.php");
         require_once(VIEWS_PATH . "footer.php");
         }
     }
 
     public function remove($id){
-        //check if user is logged and has admin privileges
-        if($_SESSION['user'] == null || $_SESSION['user']->getIdRol() != 1){
-            header("HTTP/1.1 403");           
-            return;
-        }
-        
-        $this->cinemaDaos->remove($id);
-        $this->index();
+        $this->roomDaos->remove($id);
+        $this->show($_POST['idCinema']);
     }
+
 
 }
 

@@ -15,7 +15,7 @@ class MovieController{
 
     public function update(){
 
-        if($_SESSION['user'] == null || !$_SESSION['user']->isAdmin()){
+        if($_SESSION['user'] == null || $_SESSION['user']->getIdRol() != 1){
             header("HTTP/1.1 403");
             //or redirect to login, idk
             //$c = new UserController();
@@ -24,8 +24,8 @@ class MovieController{
         }
 
 
-        $this->genreDaos->updateFromAPI();
-        $this->movieDaos->updateFromAPI();
+        $this->genreDaos->update();
+        //$this->movieDaos->update();
         $this->show();
     }
 
@@ -36,16 +36,17 @@ class MovieController{
     }
 
 
-    public function show($genreRequired = "all", $yearRequired = "all", int $page = 1){
+    public function show($genreRequired = "all", $yearRequired = "all", $page = 1){
 
         $movies = $this->movieDaos->getAll();
         $genres = $this->genreDaos->getAll(); //this is used later in the view to display a dropdown
 
+        $page = intval($page);
 
         //filter by genre
         if($genreRequired != "all"){
               $movies = array_filter($movies, function($movie) use($genreRequired){
-                return in_array($genreRequired, $movie->getGenresId());
+                return in_array($genreRequired, unserialize($movie->getGenreIds()));
               });
         }
 

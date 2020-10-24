@@ -3,7 +3,7 @@
           *logo*
           <?php 
           if(isset($_SESSION['user'])){
-               echo 'Bienvenido, ' . $_SESSION['user']->getName();
+               echo 'Bienvenido, ' . $_SESSION['user']->getEmail();
           }
           ?>
      </div>
@@ -13,7 +13,7 @@
                <a class="navLink" href="<?=FRONT_ROOT?>">Inicio</a>
           </li>
           <?php if(isset($_SESSION['user'])){?>
-          <?php if($_SESSION['user']->isAdmin()){?>
+          <?php if($_SESSION['user']->getIdRol() == 1){?>
           <li class="dropdown navItem">
                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true"> <span class="nav-label">Admin</span> <span class="caret"></span></a>
                <ul class="dropdown-menu">

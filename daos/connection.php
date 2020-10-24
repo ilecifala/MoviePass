@@ -49,6 +49,21 @@
                 throw $ex;
             }
         }
+
+        public function executeWithAssoc($query, $parameters = array()){
+            try{
+                $this->prepare($query);
+                
+                $this->bindParameters($parameters);
+                
+                $this->pdoStatement->execute();
+
+                return $this->pdoStatement->fetchAll(PDO::FETCH_ASSOC);
+                
+            }catch(Exception $ex){
+                throw $ex;
+            }
+        }
         
         public function executeNonQuery($query, $parameters = array(), $queryType = QueryType::Query)
 	    {            
