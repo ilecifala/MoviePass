@@ -1,5 +1,5 @@
 <?php
-namespace daos;
+namespace repository;
 use models\genre as Genre;
 
 class GenreDaos implements IDaos{

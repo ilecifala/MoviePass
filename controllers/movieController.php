@@ -25,7 +25,7 @@ class MovieController{
 
 
         $this->genreDaos->update();
-        //$this->movieDaos->update();
+        $this->movieDaos->update();
         $this->show();
     }
 
@@ -38,6 +38,7 @@ class MovieController{
 
     public function show($genreRequired = "all", $yearRequired = "all", $page = 1){
 
+        
         $movies = $this->movieDaos->getAll();
         $genres = $this->genreDaos->getAll(); //this is used later in the view to display a dropdown
 
