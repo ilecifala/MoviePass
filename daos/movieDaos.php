@@ -45,7 +45,7 @@ class MovieDaos extends BaseDaos{
                     $url = self::API_ROOT_URL . "movie/{$movie->getId()}}?api_key=" . MOVIEDB_KEY . "&language=$lang";
                     $resultRaw = file_get_contents($url);
                     $runtime = json_decode($resultRaw, true)['runtime'];
-                    $movie->setDuracion($runtime);
+                    $movie->setDuration($runtime);
                     $this->add($movie);
                 }
             }
@@ -63,7 +63,7 @@ class MovieDaos extends BaseDaos{
         $resultMovies = array();
 
         foreach($movies as $jsonMovie){
-            $movie = new Movie($jsonMovie['id'], $jsonMovie['original_title'], $jsonMovie['overview'], self::API_IMAGE_URL . $jsonMovie['poster_path'], $jsonMovie['original_language'], serialize($jsonMovie['genre_ids']), $jsonMovie['release_date'], $runtime);
+            $movie = new Movie($jsonMovie['id'], $jsonMovie['original_title'], $jsonMovie['overview'], self::API_IMAGE_URL . $jsonMovie['poster_path'], $jsonMovie['original_language'], serialize($jsonMovie['genre_ids']), $jsonMovie['release_date']);
             $resultMovies[] = $movie;
         }
 
