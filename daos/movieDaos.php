@@ -28,13 +28,13 @@ class MovieDaos extends BaseDaos{
         return parent::_add($movie, true);
     }
 
-    public function getMoviesFromGenreAndYear($genre, $year){
-        "SELECT * FROM movies WHERE genre = :genre and year = :year;";
-        
-            $this->connection = Connection::getInstance();
-
+    public function getMoviesFilterGenreAndYear($genre, $year){
+        //TODO
     }
 
+    const API_ROOT_URL = "https://api.themoviedb.org/3/";
+    const API_IMAGE_URL = "http://image.tmdb.org/t/p/w500";
+    const API_DEFAULT_LANG = "es";
     public function update($lang = self::API_DEFAULT_LANG){
         $page = 1;
         do{
@@ -52,9 +52,7 @@ class MovieDaos extends BaseDaos{
             $page++;
         }while(!empty($moviesApi));
     }
-    const API_ROOT_URL = "https://api.themoviedb.org/3/";
-    const API_IMAGE_URL = "http://image.tmdb.org/t/p/w500";
-    const API_DEFAULT_LANG = "es";
+
 
     private function updateFromApi($page = 1, $lang = self::API_DEFAULT_LANG){
         $url = self::API_ROOT_URL . "movie/now_playing?api_key=" . MOVIEDB_KEY . "&language=" . $lang . "&page=" . $page;

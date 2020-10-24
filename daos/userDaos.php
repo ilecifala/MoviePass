@@ -3,7 +3,7 @@ namespace daos;
 use daos\baseDaos as BaseDaos;
 
 
-class UserDaos extends BaseDaos {
+class UserDaos extends BaseDaos{
 
     const TABLE_NAME = "users";
 

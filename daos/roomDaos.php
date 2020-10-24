@@ -34,7 +34,7 @@ class RoomDaos extends BaseDaos{
         return parent::_remove($id, 'id');
     }
 
-    public function modify($room){
+    public function modify($room){        
         return parent::_modify($room, $room->getId(), "id");
     }
 }

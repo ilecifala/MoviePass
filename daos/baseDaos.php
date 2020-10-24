@@ -12,7 +12,7 @@ abstract class BaseDaos{
     private $className;
     private $reflectionClass;
 
-    protected function __construct($table, $class){ //users,cinema
+    protected function __construct($table, $class){ 
         $this->table = $table;
         $this->className = strtolower($class);
         $this->class = '\\models\\'.strtolower($class);
@@ -45,62 +45,60 @@ abstract class BaseDaos{
 
     /** 
      * @param T $object instance  to add
-     * @param boolean $withId tries to insert id if true
+     * @param boolean $withId if true tries to insert id (if false it autogenerates)
      */
 
     protected function _add($object, $withId = false){
         try{
-                //start creating query
-                $query = "INSERT INTO " . $this->table . " ("; //id, name, lastname) values (:id, :name, :lastname)
+            //start creating query
+            $query = "INSERT INTO " . $this->table . " ("; //id, name, lastname) values (:id, :name, :lastname)
 
-                //get class properties
-                $properties = $this->reflectionClass->getProperties(ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED);              
-                
-                //get column names from property names
-                $columns = array_column($properties, 'name');
+            //get class properties
+            $properties = $this->reflectionClass->getProperties(ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED);              
+            
+            //get column names from property names
+            $columns = array_column($properties, 'name');
 
-                //retrieve values from object instance 
-                $parameters = array();
-                foreach($columns as $property){
-                    //call getters
-                    if($property != "id" | $withId){
-                        $method = new ReflectionMethod($this->class, 'get' . ucfirst($property));
-                        $value = $method->invoke($object);
-                        $parameters[$property ."_". $this->className] = $value;
-                    }
+            //retrieve values from object instance 
+            $parameters = array();
+            foreach($columns as $property){
+                //call getters
+                if($property != "id" | $withId){
+                    $method = new ReflectionMethod($this->class, 'get' . ucfirst($property));
+                    $value = $method->invoke($object);
+                    $parameters[$property ."_". $this->className] = $value;
                 }
+            }
+            
+            //add "_{objectClass}" to all properties (this is done cuz in db column names end with "_entityName") ex: id_cinema, name_cinema, name_user, email_user
+            array_walk($properties, function(&$value, $key) { $value->name .= '_' . $this->className; } );
+
+            //get column names from property names
+            $columns = array_column($properties, 'name');
+
+            //remove id if necessary
+            if(!$withId){
+                $columns = array_diff($columns, ['id_' . $this->className]);
+            }
                 
-                //add "_{objectClass}" to all properties
-                array_walk($properties, function(&$value, $key) { $value->name .= '_' . $this->className; } );
+            //separate them by comma
+            $formattedColumns = implode(", ",$columns);
+            
+            //add them to query
+            $query .= $formattedColumns;
 
-                //var_dump($properties);             
+            //keep creating query
+            $query .= ") VALUES (";
 
-                //get column names from property names
-                $columns = array_column($properties, 'name');
+            //add ":" to column names
+            array_walk($columns, function(&$value, $key) { $value = ":" . $value; } );
+            //add them to query
+            $query .= implode(", ",$columns);;
+            $query .= ");";
 
-                //remove id if necessary
-                if(!$withId){
-                    $columns = array_diff($columns, ['id_' . $this->className]);
-                }
-                  
-                //separate them by comma
-                $formattedColumns = implode(", ",$columns);
-                
-                //add them to query
-                $query .= $formattedColumns;
+            $this->connection = Connection::getInstance();
 
-                //keep creating query
-                $query .= ") VALUES (";
-
-                //add ":" to column names
-                array_walk($columns, function(&$value, $key) { $value = ":" . $value; } );
-                //add them to query
-                $query .= implode(", ",$columns);;
-                $query .= ");";
-
-                $this->connection = Connection::getInstance();
-
-                $this->connection->ExecuteNonQuery($query, $parameters);
+            $this->connection->ExecuteNonQuery($query, $parameters);
 
         }catch(\Exception $ex){
             throw $ex;

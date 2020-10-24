@@ -12,6 +12,13 @@ class CinemaController{
 
     public function index(){
 
+        //check if user is logged and has admin privileges
+        if($_SESSION['user'] == null || $_SESSION['user']->getIdRol() != 1){
+            header("HTTP/1.1 403");           
+            return;
+        }
+
+
         $cinemas = $this->cinemaDaos->getAll();
         $modalView = 'login.php';
         require_once(VIEWS_PATH . "header.php");
@@ -127,6 +134,12 @@ class CinemaController{
     }
 
     public function remove($id){
+        //check if user is logged and has admin privileges
+        if($_SESSION['user'] == null || $_SESSION['user']->getIdRol() != 1){
+            header("HTTP/1.1 403");           
+            return;
+        }
+        
         $this->cinemaDaos->remove($id);
         $this->index();
     }

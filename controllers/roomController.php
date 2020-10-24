@@ -12,13 +12,13 @@ class RoomController{
         $this->cinemaDaos = new CinemaDaos();
     }
 
-    public function index(){
+    public function show($id){
         //check if user is logged and has admin privileges
         if($_SESSION['user'] == null || $_SESSION['user']->getIdRol() != 1){
             header("HTTP/1.1 403");           
             return;
         }
-        $id = $_POST['idCinema'];
+
         $cinema = $this->cinemaDaos->getById($id);
         $rooms = $this->roomDaos->getByCinema($id);
 
@@ -62,7 +62,7 @@ class RoomController{
             //add room to db
             $this->roomDaos->add($room);
             //back to index
-            $this->index();
+            $this->show($idCinema);
         }else{
             require_once(VIEWS_PATH . "header.php");
             require_once(VIEWS_PATH . "addRoom.php");
@@ -89,8 +89,9 @@ class RoomController{
             $ticketPrice = $_POST['ticket'];
 
             $room = new Room($name, $capacity, $ticketPrice);
-            //replace new id with old id
+            //replace null id with id
             $room->setId($id);
+            //add cinema id
             $room->setIdCinema($idCinema);
 
             //check for empty fields
@@ -107,7 +108,7 @@ class RoomController{
             //modify cinema in db
             $this->roomDaos->modify($room);
             //back to index
-            $this->index();
+            $this->show($idCinema);
         }else{
             
         //get cinema from id
@@ -115,8 +116,8 @@ class RoomController{
 
         //cinema not found
         if(empty($room)){
-            $this->index();
-            return;
+            //$this->show();
+            //return;
         }
         
         require_once(VIEWS_PATH . "header.php");
@@ -127,7 +128,7 @@ class RoomController{
 
     public function remove($id){
         $this->roomDaos->remove($id);
-        $this->index();
+        $this->show($_POST['idCinema']);
     }
 
 

@@ -41,6 +41,7 @@
                             <input type="hidden" name="idCinema" value="<?=$cinema->getId()?>">
                             <button class="material-icons" onclick="this.form.submit()">&#xE254;</i>                             
                         </form>
+                        
                         <form action="<?=FRONT_ROOT?>room/remove/" method="post">
                             <input type="hidden" name="id" value="<?=$room->getId()?>">
                             <input type="hidden" name="idCinema" value="<?=$cinema->getId()?>">
