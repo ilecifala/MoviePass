@@ -1,4 +1,10 @@
 <!--Totally stolen from https://www.tutorialrepublic.com/codelab.php?topic=bootstrap&file=table-with-add-and-delete-row-feature -->
+
+<script>
+$(document).ready(function() {
+    $('#cinemaTable').DataTable();
+} );
+</script>
 <div class="table-responsive">
     <div class="table-wrapper">
         <div class="table-title">
@@ -15,7 +21,7 @@
                 </div>
             </div>
         </div>
-        <table class="table table-bordered">
+        <table id="cinemaTable" class="table table-bordered">
             <thead>
                 <tr>
                     <th>Nombre</th>

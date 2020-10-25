@@ -11,10 +11,13 @@ create table movies (id_movie int NOT NULL,
                      overview_movie text,
                      img_movie varchar (100),
                      language_movie varchar (2) NOT NULL,
-                     genreIds_movie text NOT NULL,
                      releaseDate_movie date NOT NULL,
                      duration_movie int,
                      constraint pk_idMovie primary key (id_movie));
+
+create table movies_genres(id_movie int not null,
+                    id_genre int not null,
+                    constraint unq_moviesGenres unique (id_movie, id_genre));
                      
 create table users (id_user int auto_increment,
 					email_user varchar (50) NOT NULL,
@@ -69,3 +72,6 @@ create table shows (id_show int auto_increment,
 
 INSERT INTO rols (id_rol, description_rol) VALUES (1, 'admin');
 INSERT INTO rols (id_rol, description_rol) VALUES (2, 'user');
+
+
+
