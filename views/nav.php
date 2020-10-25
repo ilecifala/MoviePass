@@ -27,7 +27,7 @@
           </li>
           <?php } ?>
           <li class="navItem">
-               <a class="navLink" href="#">Perfil</a>
+               <a class="navLink" href="<?=FRONT_ROOT?>user/profile">Perfil</a>
           </li>
           <li class="navItem">
                <a class="navLink" href="<?=FRONT_ROOT?>user/logout">Cerrar sesión</a>

@@ -2,6 +2,7 @@
 namespace controllers;
 
 use models\user as User;
+use models\userProfile as Profile;
 use daos\userDaos as UserDaos;
 
 class UserController{
@@ -67,6 +68,18 @@ class UserController{
     public function logout(){
         $_SESSION['user'] = null;
         $this->login();
+    }
+
+    public function profile(){
+        if(!empty($_POST['firstName'])){
+            $firstName = $_POST['firstName'];
+            $profile = new Profile();
+            $profile->setFirstName($firstName);
+            $_POST['profile'] = $profile;
+        }
+        require_once(VIEWS_PATH . "header.php");
+        require_once(VIEWS_PATH . "profile.php");
+        require_once(VIEWS_PATH . "footer.php");
     }
 }
 
