@@ -55,7 +55,8 @@
                 $this->prepare($query);
                 
                 $this->bindParameters($parameters);
-                
+
+                                
                 $this->pdoStatement->execute();
 
                 return $this->pdoStatement->fetchAll(PDO::FETCH_ASSOC);
@@ -102,7 +103,6 @@
             foreach($parameters as $parameterName => $value)
             {                
                 $i++;
-
                 if($queryType == QueryType::Query)
                     $this->pdoStatement->bindParam(":".$parameterName, $parameters[$parameterName]);
                 else

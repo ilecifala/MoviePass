@@ -1,9 +1,10 @@
+
 <main>
     <h1 class="indexTitle">Cartelera</h1>
     <h2>Ver Por: </h2>
     <form method="GET" >
         <label for="genres">Genero:</label>
-        <select name="genre" id="genres" onchange="this.form.submit()">
+        <select name="genre" id="genres" onchange="showResult()">
             <option value="all">Todos</option>
             <?php foreach($genres as $genre){?>
             <option value="<?=$genre->getId();?>" <?php if($genre->getId() == $genreRequired) echo "selected=\"selected\""?>><?=$genre->getName();?></option> 
@@ -11,16 +12,17 @@
         </select>
 
         <label for="year">Año:</label>
-        <select name="year" id="year" onchange="this.form.submit()">
+        <select name="year" id="year" onchange="showResult()">
             <option value="all">Todos</option>
-            <?php for($i = 2020; $i > 2015 ; $i--){?>
+            <?php foreach($years as $year){?>
             
-            <option value="<?=$i?>"<?php if($i == $yearRequired) echo " selected=\"selected\""?>><?=$i?></option> 
+            <option value="<?=$year?>"><?=$year?></option> 
         <?php } ?>
         </select>
+        <input type="text" id="name" size="30" onkeyup="showResult(this.value)">
     </form>
 
-    <div class="moviesList">
+    <div class="moviesList" id="moviesList">
         <?php foreach($movies as $movie){?> 
         <a class="movieButton" href="<?=FRONT_ROOT?>movie/details/<?= $movie->getId()?>"><img class="img-responsive" style="max-width: 10%" src="<?= $movie->getImg(); ?>" alt="<?= $movie->getTitle();?>" ></a>
         
@@ -62,3 +64,35 @@
     </ul>
     </nav>
 </main>
+<script>
+function showResult() {
+
+  var xmlhttp=new XMLHttpRequest();
+  xmlhttp.onreadystatechange=function() {
+    if (this.readyState==4 && this.status==200) {
+      //document.getElementById("livesearch").innerHTML=this.responseText;
+      //document.getElementById("livesearch").style.border="1px solid #A5ACB2";
+      //console.log(this.responseText);
+
+      //Clear all movies
+      $('#moviesList').html("")
+
+      var myArr = JSON.parse(this.responseText);
+
+      for(var k in myArr) {
+        console.log(k, myArr[k]);
+        $('#moviesList').append('<a class="movieButton" href="<?=FRONT_ROOT?>movie/details/' + myArr[k]['id_movie'] + '"><img class="img-responsive" style="max-width: 10%" src="' + myArr[k]['img_movie'] + '" alt="' + myArr[k]['title_movie'] + '" ></a>');
+      }
+
+      
+    }
+  }
+
+  var genre = document.getElementById("genres").value;
+  var year = document.getElementById("year").value;
+  var name = document.getElementById("name").value;
+ 
+  xmlhttp.open("GET","<?= FRONT_ROOT?>movie/getMovies/" + genre + "/" + year + "/" + name,true);
+  xmlhttp.send();
+}
+</script>

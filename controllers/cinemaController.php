@@ -27,6 +27,10 @@ class CinemaController{
 
     }
 
+    public function getAll(){
+        $cinemas = $this->cinemaDaos->getAll(); 
+    }
+
 
     public function add(){
 

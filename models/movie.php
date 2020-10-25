@@ -1,24 +1,24 @@
 <?php
 namespace models;
 
-class Movie{
+class Movie implements \JsonSerializable{
 
     private $id;
 	private $title;
 	private $overview;
     private $img;
     private $language;
-    private $genreIds;
+    private $genres;
 	private $releaseDate;
 	private $duration;
 
-    public function __construct($id = -1, $title = '', $overview = '', $img = '', $language = '', $genreIds = '', $releaseDate = '', $duration = ''){
+    public function __construct($id = -1, $title = '', $overview = '', $img = '', $language = '', $genres = array(), $releaseDate = '', $duration = ''){
 		$this->id = $id;
 		$this->title = $title;
 		$this->overview = $overview;
         $this->img = $img;
         $this->language = $language;
-        $this->genreIds = $genreIds;
+        $this->genres = $genres;
 		$this->releaseDate = $releaseDate;
 		$this->duration = $duration;
     }
@@ -63,12 +63,12 @@ class Movie{
 		$this->language = $language;
 	}
 
-	public function getGenreIds(){
-		return $this->genreIds;
+	public function getGenres(){
+		return $this->genres;
 	}
 
-	public function setGenreIds($genreIds){
-		$this->genreIds = $genreIds;
+	public function setGenres($genres){
+		$this->genres = $genres;
 	}
 
 	public function getReleaseDate(){
@@ -86,5 +86,9 @@ class Movie{
 	public function setDuration($duration){
 		$this->duration = $duration;
 	}
+
+    public function jsonSerialize(){
+        return get_object_vars($this);
+    }
 
 }

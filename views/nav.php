@@ -23,6 +23,9 @@
                     <li class="navItem">
                          <a class="navLink" href="<?=FRONT_ROOT?>cinema">Administrar cines</a>                         
                     </li>
+                    <li class="navItem">
+                         <a class="navLink" href="<?=FRONT_ROOT?>show">Administrar funciones</a>                         
+                    </li>
                </ul>
           </li>
           <?php } ?>

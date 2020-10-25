@@ -2,6 +2,7 @@
 namespace controllers;
 use daos\MovieDaos as MovieDaos;
 use daos\GenreDaos as GenreDaos;
+use models\movie as Movie;
 
 class MovieController{
 
@@ -35,6 +36,24 @@ class MovieController{
         $this->show();
     }
 
+    public function getMovies($genreRequired = "all", $yearRequired = "all", $name = null, $page = 1){
+
+       // $response = $this->movieDaos->getAll();
+        //var_dump($response);
+        //echo json_encode($response, JSON_FORCE_OBJECT);
+        $movies = $this->movieDaos->getMoviesFiltered($genreRequired, $yearRequired, $name, $page);
+        //convert to array
+
+        echo json_encode($movies);
+        /*
+        echo "<pre>";
+        echo json_encode($movies, JSON_PRETTY_PRINT);
+        echo "----";
+        echo json_encode($arrayToEncode, JSON_PRETTY_PRINT);
+        echo "</pre>";
+        */
+    }
+
 
     public function show($genreRequired = "all", $yearRequired = "all", $page = 1){
 
@@ -44,21 +63,12 @@ class MovieController{
 
         $page = intval($page);
 
-        //filter by genre
-        if($genreRequired != "all"){
-              $movies = array_filter($movies, function($movie) use($genreRequired){
-                return in_array($genreRequired, unserialize($movie->getGenreIds()));
-              });
-        }
-
-        //filter by year
-        if($yearRequired != "all"){
-            $movies = array_filter($movies, function($movie) use($yearRequired){
-              return $yearRequired ==  explode('-', $movie->getReleaseDate())[0];
-            });
-        }
+        
+        $years = array_column($this->movieDaos->getMoviesYear(),'year');
 
 
+
+        
         //pagination
         $limit = 16;//limit to show per page
         $totalMovies = count($movies);
@@ -67,6 +77,7 @@ class MovieController{
         if($offset < 0) $offset = 0;
 
         $movies = array_slice($movies, $offset, $limit);
+        
 
         require_once(VIEWS_PATH . "header.php");
         require_once(VIEWS_PATH . "index.php");
