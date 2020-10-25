@@ -1,5 +1,5 @@
 <?php
-namespace daos;
+namespace repository;
 use daos\IDaos as IDaos;
 use daos\genreDaos as GenreDaos;
 use models\movie as Movie;
