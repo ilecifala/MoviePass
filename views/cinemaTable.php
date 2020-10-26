@@ -25,8 +25,6 @@ $(document).ready(function() {
             <thead>
                 <tr>
                     <th>Nombre</th>
-                    <th>Capacidad</th>
-                    <th>Precio de entrada</th>
                     <th>Dirección</th>
                     <th>Ciudad y Provincia</th>
                     <th>Acciones</th>
@@ -36,8 +34,6 @@ $(document).ready(function() {
                 <?php foreach($cinemas as $cinema){?>
                 <tr>
                     <td><?=$cinema->getName()?></td>
-                    <td><?=$cinema->getCapacity()?></td>
-                    <td><?=$cinema->getTicketPrice()?></td>
                     <td><?=$cinema->getAddress()?></td>
                     <td><?=$cinema->getCity(). ", " . $cinema->getProvince()?></td>
                     <td>

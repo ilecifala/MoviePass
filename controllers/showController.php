@@ -24,13 +24,13 @@ class ShowController{
     public function index(){
 
         //check if user is logged and has admin privileges
-        if($_SESSION['user'] == null || $_SESSION['user']->getIdRol() != 1){
+        if(!isset($_SESSION['user']) || $_SESSION['user']->getIdRol() != 1){
             header("HTTP/1.1 403");           
             return;
         }
 
-        $this->showDaos->getAll();
-       
+        $shows = $this->showDaos->getAll();
+
         require_once(VIEWS_PATH . "header.php");
         require_once(VIEWS_PATH . "showTable.php");
         require_once(VIEWS_PATH . "footer.php");
@@ -38,17 +38,33 @@ class ShowController{
 
     public function add(){
 
+        //check if user is logged and has admin privileges
+        if(!isset($_SESSION['user']) || $_SESSION['user']->getIdRol() != 1){
+            header("HTTP/1.1 403");           
+            return;
+        }
+
         //this is used later in the view to display dropdowns
         $genres = $this->genreDaos->getAll(); 
         $years = array_column($this->movieDaos->getMoviesYear(),'year');
 
-        $cinemas = $this->cinemaDaos->getAll();
-
+        $cinemas = $this->cinemaDaos->getAllWithRooms();
         
         require_once(VIEWS_PATH . "header.php");
         require_once(VIEWS_PATH . "addShow.php");
         require_once(VIEWS_PATH . "footer.php");
         
+    }
+
+    public function remove($id){
+        //check if user is logged and has admin privileges
+        if(!isset($_SESSION['user']) || $_SESSION['user']->getIdRol() != 1){
+            header("HTTP/1.1 403");           
+            return;
+        }
+        
+        $this->showDaos->remove($id);
+        $this->index();
     }
 }
 

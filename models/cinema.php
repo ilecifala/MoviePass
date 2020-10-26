@@ -6,21 +6,17 @@ namespace models;
 class Cinema{
     private $id;
     private $name;
-    private $capacity;
     private $address;
     private $city;
     private $zip;
     private $province;
-    private $ticketPrice;
 
-    public function __construct($name = "vacio", $capacity = -1, $address = "vacio", $city = "vacio", $zip = -1, $province = "vacio", $ticketPrice = "vacio"){
+    public function __construct($name = "vacio", $address = "vacio", $city = "vacio", $zip = -1, $province = "vacio"){
         $this->name = $name;
-        $this->capacity = $capacity;
         $this->address = $address;
         $this->city = $city;
         $this->zip = $zip;
         $this->province = $province;
-        $this->ticketPrice = $ticketPrice;
     }
 
     public function getId(){
@@ -37,14 +33,6 @@ class Cinema{
 
     public function setName($name){
         $this->name = $name;
-    }
-
-    public function getCapacity(){
-        return $this->capacity;
-    }
-
-    public function setCapacity($capacity){
-        $this->capacity = $capacity;
     }
 
     public function getAddress(){
@@ -79,19 +67,7 @@ class Cinema{
         $this->province = $province;
     }
 
-    public function getTicketPrice(){
-        return $this->ticketPrice;
-    }
-
-    public function setTicketPrice($ticketPrice){
-        $this->ticketPrice = $ticketPrice;
-    }
-
 }
-
-
-
-
 
 
 

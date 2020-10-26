@@ -1,6 +1,7 @@
 <?php
 namespace daos;
 use daos\baseDaos as BaseDaos;
+use models\cinema as Cinema;
 
 class CinemaDaos extends BaseDaos{
 
@@ -32,6 +33,25 @@ class CinemaDaos extends BaseDaos{
 
     public function modify($cinema){
         return parent::_modify($cinema, $cinema->getId(), "id");
+    }
+
+    public function getAllWithRooms(){
+
+        $query = "SELECT * FROM ". self::TABLE_NAME ." c INNER JOIN rooms r ON c.id_cinema = r.idCinema_room GROUP BY c.id_cinema";        
+
+        $connection = Connection::getInstance();
+
+        $result = array();
+
+        $cinemas = $connection->executeWithAssoc($query);
+
+        foreach($cinemas as $cinema){
+            $object = new Cinema($cinema['name_cinema'], $cinema['address_cinema'],$cinema['city_cinema'],$cinema['zip_cinema'],$cinema['province_cinema']);
+            $object->setId($cinema['id_cinema']);
+            $result[] = $object;
+        }
+        
+        return $result;
     }
 }
 ?>

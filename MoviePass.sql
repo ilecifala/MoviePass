@@ -43,7 +43,6 @@ create table userProfiles (id_user int NOT NULL,
 
 create table cinemas (id_cinema int auto_increment,
 					 name_cinema varchar (50) NOT NULL,
-					 capacity_cinema int,
                      address_cinema varchar (50),
                      city_cinema varchar (50),
                      province_cinema varchar (50),
@@ -73,6 +72,26 @@ create table shows (id_show int auto_increment,
 
 INSERT INTO rols (id_rol, description_rol) VALUES (1, 'admin');
 INSERT INTO rols (id_rol, description_rol) VALUES (2, 'user');
+
+INSERT INTO users (email_user, password_user, idRol_user) values ('admin@moviepass.com', '1234', 1);
+
+INSERT INTO cinemas (name_cinema, address_cinema, city_cinema, province_cinema, zip_cinema) VALUES ('Cine Ambassador','Diagonal Centro 1673','Mar del Plata','Buenos Aires','7600');
+INSERT INTO cinemas (name_cinema, address_cinema, city_cinema, province_cinema, zip_cinema) VALUES ('Cines Paseo Aldrey','Sarmiento 2685','Mar del Plata','Buenos Aires','7600');
+INSERT INTO cinemas (name_cinema, address_cinema, city_cinema, province_cinema, zip_cinema) VALUES ('Cinemark Hoyts','Av. Alicia Moreau de Justo 1920','CABA','Buenos Aires','C1107');
+
+INSERT INTO rooms (name_room, price_room ,capacity_room, idCInema_room) VALUES ('Sala A', 500, 100, 1);
+INSERT INTO rooms (name_room, price_room ,capacity_room, idCInema_room) VALUES ('Sala B', 750, 120, 1);
+INSERT INTO rooms (name_room, price_room ,capacity_room, idCInema_room) VALUES ('Sala C', 600, 115, 1);
+
+INSERT INTO rooms (name_room, price_room ,capacity_room, idCInema_room) VALUES ('Sala A', 400, 90, 2);
+INSERT INTO rooms (name_room, price_room ,capacity_room, idCInema_room) VALUES ('Sala B', 650, 110, 2);
+INSERT INTO rooms (name_room, price_room ,capacity_room, idCInema_room) VALUES ('Sala C', 450, 105, 2);
+
+INSERT INTO rooms (name_room, price_room ,capacity_room, idCInema_room) VALUES ('Sala A', 440, 110, 3);
+INSERT INTO rooms (name_room, price_room ,capacity_room, idCInema_room) VALUES ('Sala B', 670, 105, 3);
+INSERT INTO rooms (name_room, price_room ,capacity_room, idCInema_room) VALUES ('Sala C', 430, 128, 3);
+
+
 
 drop database MoviePass;
 drop table shows;
