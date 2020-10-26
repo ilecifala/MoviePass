@@ -2,7 +2,7 @@
 namespace models;
 
 
-class Room{
+class Room implements \JsonSerializable{
 
     private $id;
     private $name;
@@ -56,5 +56,9 @@ class Room{
 	public function setIdCinema($idCinema){
 		$this->idCinema = $idCinema;
 	}
+
+	public function jsonSerialize(){
+        return get_object_vars($this);
+    }
 
 }

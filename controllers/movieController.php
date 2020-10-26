@@ -36,22 +36,23 @@ class MovieController{
         $this->show();
     }
 
-    public function getMovies($genreRequired = "all", $yearRequired = "all", $name = null, $page = 1){
-
-       // $response = $this->movieDaos->getAll();
-        //var_dump($response);
-        //echo json_encode($response, JSON_FORCE_OBJECT);
+    public function getMovies($genreRequired = "all", $yearRequired = "all", $name = "all", $page = 1){
+        if($name == "all") $name = null;
         $movies = $this->movieDaos->getMoviesFiltered($genreRequired, $yearRequired, $name, $page);
-        //convert to array
-
         echo json_encode($movies);
-        /*
-        echo "<pre>";
-        echo json_encode($movies, JSON_PRETTY_PRINT);
-        echo "----";
-        echo json_encode($arrayToEncode, JSON_PRETTY_PRINT);
-        echo "</pre>";
-        */
+    }
+
+
+    public function showTest($genreRequired = "all", $yearRequired = "all", $query = null, $page = 1){
+
+        $genres = $this->genreDaos->getAll(); //this is used later in the view to display a dropdown
+
+        $years = array_column($this->movieDaos->getMoviesYear(),'year');
+
+
+        require_once(VIEWS_PATH . "header.php");
+        require_once(VIEWS_PATH . "moviesSlide.php");
+        require_once(VIEWS_PATH . "footer.php");
     }
 
 

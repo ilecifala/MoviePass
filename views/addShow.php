@@ -1,22 +1,5 @@
-<script>
-$(document).ready(function(){
-    $("cinemas").change(function(){
-        $(this).find("option:selected").each(function(){
-            var optionValue = $(this).attr("value");
-            if(optionValue){
-                $(".box").not("." + optionValue).hide();
-                $("." + optionValue).show();
-            } else{
-                $(".box").hide();
-            }
-        });
-    }).change();
-});
-</script>
-
 <main class="">
-
-<div style="margin-top:50px" class="container">
+<div style="margin-top:50px" class="container-fluid">
 	<div class="row">
 		<div class="col-sm-1"></div>
 		<div class="col-sm-2"></div>		
@@ -28,7 +11,40 @@ $(document).ready(function(){
 
                 <div class="form-group">
                     <label >Pelicula<span class="asteriskField">*</span></label>
-                    <input class="form-control" name="name" type="text" value="<?php if(isset($room)) echo $room->getName()?>" size="20"><br>
+                    <div style="display:inline-block; position:relative;" onclick="openSelectMovie()">
+                        <input  disabled  name="name" type="text" size="20">
+                    </div>​
+                    <br>
+
+<!--
+                    Buscar por: 
+                <form method="GET" >
+                    <label for="genres">Genero:</label>
+                    <select name="genre" id="genres" onchange="showResult()">
+                        <option value="all">Todos</option>
+                        <?php foreach($genres as $genre){?>
+                        <option value="<?=$genre->getId();?>"><?=$genre->getName();?></option> 
+                    <?php } ?>
+                    </select>
+
+                    <label for="year">Año:</label>
+                    <select name="year" id="year" onchange="showResult()">
+                        <option value="all">Todos</option>
+                        <?php foreach($years as $year){?>
+                        
+                        <option value="<?=$year?>"><?=$year?></option> 
+                    <?php } ?>
+                    </select>
+                    <input type="text" id="name" size="30" onkeyup="showResult()">
+                </form>
+
+                <div class="moviesList" id="moviesList">
+
+                </div>
+
+                        -->
+
+
                 <div class="form-group">
                     <label>Cine<span class="asteriskField">*</span></label>
                     <select name="cinemas" id="cinemas" onchange="getRooms()">
@@ -40,11 +56,7 @@ $(document).ready(function(){
                 </div>
                 <div class="form-group" display="none">
                     <label>Sala<span class="asteriskField">*</span></label>
-                    <select name="cars" id="cars">
-                    <option value="volvo">Volvo</option>
-                    <option value="saab">Saab</option>
-                    <option value="mercedes">Mercedes</option>
-                    <option value="audi">Audi</option>
+                    <select name="rooms" id="rooms">
                     </select>
                 </div>
                 <div class="form-group">
@@ -70,31 +82,142 @@ $(document).ready(function(){
     </div> 
 </div> 
 
+<!--modal-->
+<div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Seleccionar pelicula</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        Buscar por: 
+        <form method="GET" >
+            <label for="genres">Genero:</label>
+            <select name="genre" id="genres" onchange="showResult()">
+                <option value="all">Todos</option>
+                <?php foreach($genres as $genre){?>
+                <option value="<?=$genre->getId();?>"><?=$genre->getName();?></option> 
+            <?php } ?>
+            </select>
+
+            <label for="year">Año:</label>
+            <select name="year" id="year" onchange="showResult()">
+                <option value="all">Todos</option>
+                <?php foreach($years as $year){?>
+                
+                <option value="<?=$year?>"><?=$year?></option> 
+            <?php } ?>
+            </select>
+            <input type="text" id="name" size="30" onkeyup="showResult()">
+        </form>
+
+        <div class="moviesList" id="moviesList"></div>        
+    </div>
+  </div>
+</div>
+
+
+
 </main>
 <script>
+//load rooms when page is ready
+$(document).ready(function(){
+  getRooms();
+});
+
+
+function openSelectMovie(){
+    console.log("asd");
+    $('#myModal').modal('show');
+}
+
+
 function getRooms() {
 
+    var cinema = document.getElementById("cinemas").value;
+
+    //remove all options
+    $('#rooms').empty()
+    
+
+    var xmlhttp=new XMLHttpRequest();
+    xmlhttp.onreadystatechange=function() {
+        if (this.readyState==4 && this.status==200) {
+
+            //get all rooms from json
+            var rooms = JSON.parse(this.responseText);
+
+            //loop each room and add it to dropdown
+            rooms.forEach(function(room){
+                $('#rooms').append($('<option>',{
+                    value: room['id'],
+                    text : room['name'].charAt(0).toUpperCase() + room['name'].slice(1) + " (Capacidad: " + room['capacity'] + " | Precio: " + room['price'] + ")"
+                }));
+            });                
+        }
+    } 
+ 
+  xmlhttp.open("GET","<?= FRONT_ROOT?>room/getByCinema/" + cinema, true);
+  xmlhttp.send();
+}
+
+
+
+//$("a").attr("href", "http://www.google.com/")
+
+
+
+$(".movieButton").attr("href", "#");
+
+$(".movieButton").on('click', function(event){
+    console.log(event);    
+});
+
+
+
+
+
+
+</script>
+<script>
+
+//load movies when page is ready
+$(document).ready(function(){
+  showResult();
+});
+
+function showResult(page = 1) {
   var xmlhttp=new XMLHttpRequest();
   xmlhttp.onreadystatechange=function() {
     if (this.readyState==4 && this.status==200) {
+      //Clear all movies
       $('#moviesList').html("")
 
-      var myArr = JSON.parse(this.responseText);
+      var movies = JSON.parse(this.responseText);
 
-      for(var k in myArr) {
-        console.log(k, myArr[k]);
-        $('#moviesList').append('<a class="movieButton" href="<?=FRONT_ROOT?>movie/details/' + myArr[k]['id_movie'] + '"><img class="img-responsive" style="max-width: 10%" src="' + myArr[k]['img_movie'] + '" alt="' + myArr[k]['title_movie'] + '" ></a>');
-      }
-
+      if(movies.length == 0){
+        $('#moviesList').append('No se encontraron resultados');
+      }else{
+        for(var index in movies) {
+          console.log(index, movies[index]);
+          $('#moviesList').append('<img class="img-responsive" style="max-width: 20%" src="' + movies[index]['img_movie'] + '" alt="' + movies[index]['title_movie'] + '" >');
+        }
+      }    
       
     }
   }
 
+
   var genre = document.getElementById("genres").value;
   var year = document.getElementById("year").value;
   var name = document.getElementById("name").value;
+  if(!name){
+    name = "all";
+  }
  
-  xmlhttp.open("GET","<?= FRONT_ROOT?>room/getAll/",true);
+  xmlhttp.open("GET","<?= FRONT_ROOT?>movie/getMovies/" + genre + "/" + year + "/" + name + "/" + page, true);
   xmlhttp.send();
 }
 </script>
