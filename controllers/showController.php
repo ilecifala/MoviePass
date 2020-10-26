@@ -2,6 +2,8 @@
 namespace controllers;
 use daos\showDaos as ShowDaos;
 use daos\cinemaDaos as CinemaDaos;
+use daos\GenreDaos as GenreDaos;
+use daos\MovieDaos as MovieDaos;
 use models\show as Show;
 use controllers\movieController as MovieController;
 
@@ -9,10 +11,14 @@ use controllers\movieController as MovieController;
 class ShowController{
     private $showDaos;
     private $cinemaDaos;
+    private $genreDaos;
+    private $movieDaos;
 
     public function __construct(){
         $this->showDaos = new ShowDaos();       
         $this->cinemaDaos = new CinemaDaos();  
+        $this->genreDaos = new GenreDaos();  
+        $this->movieDaos = new MovieDaos();  
     }
 
     public function index(){
@@ -32,8 +38,9 @@ class ShowController{
 
     public function add(){
 
-        $movieController = new MovieController();
-        $movieController->show();
+        //this is used later in the view to display dropdowns
+        $genres = $this->genreDaos->getAll(); 
+        $years = array_column($this->movieDaos->getMoviesYear(),'year');
 
         $cinemas = $this->cinemaDaos->getAll();
 

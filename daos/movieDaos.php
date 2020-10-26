@@ -36,11 +36,11 @@ class MovieDaos extends BaseDaos{
         $params['duration_movie'] = $movie->getDuration();
 
         $this->connection = Connection::getInstance();
-        
-        
+        $this->connection->executeNonQuery($query, $params);
+
     }
 
-    public function getMoviesFiltered($genre, $year, $name, $limit){
+    public function getMoviesFiltered($genre, $year, $name, $page = 1, $qty = 16){
         $query ="SELECT m.* from movies m LEFT JOIN movies_genres mg ON m.id_movie = mg.id_movie LEFT JOIN genres g ON mg.id_genre = g.id_genre";
         $params = array();
         $f = false;
@@ -73,10 +73,14 @@ class MovieDaos extends BaseDaos{
             $f = true;            
         }
         
-        $offset = 16;
         $query .= " GROUP BY m.id_movie";
 
-        $query .= " limit 0, " . $limit * $offset;
+        $offset = ($page - 1) * $qty;
+        if($offset < 0) $offset = 1;
+
+
+
+        $query .= " LIMIT $qty OFFSET $offset;";
         //echo $query;
 
         
@@ -90,11 +94,11 @@ class MovieDaos extends BaseDaos{
     }
 
     public function getMoviesYear(){
-        $query = "SELECT YEAR(releaseDate_movie) as year FROM ". self::TABLE_NAME . " GROUP BY YEAR(releaseDate_movie)";     
+        $query = "SELECT YEAR(releaseDate_movie) as year FROM ". self::TABLE_NAME . " GROUP BY YEAR(releaseDate_movie) order by YEAR(releaseDate_movie) desc";     
 
         $connection = Connection::getInstance();
         
-        return $this->connection->executeWithAssoc($query);
+        return $connection->executeWithAssoc($query);
     }
 
     const API_ROOT_URL = "https://api.themoviedb.org/3/";

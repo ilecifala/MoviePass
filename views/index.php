@@ -70,18 +70,14 @@ function showResult() {
   var xmlhttp=new XMLHttpRequest();
   xmlhttp.onreadystatechange=function() {
     if (this.readyState==4 && this.status==200) {
-      //document.getElementById("livesearch").innerHTML=this.responseText;
-      //document.getElementById("livesearch").style.border="1px solid #A5ACB2";
-      //console.log(this.responseText);
-
       //Clear all movies
       $('#moviesList').html("")
 
-      var myArr = JSON.parse(this.responseText);
+      var movies = JSON.parse(this.responseText);
 
-      for(var k in myArr) {
-        console.log(k, myArr[k]);
-        $('#moviesList').append('<a class="movieButton" href="<?=FRONT_ROOT?>movie/details/' + myArr[k]['id_movie'] + '"><img class="img-responsive" style="max-width: 10%" src="' + myArr[k]['img_movie'] + '" alt="' + myArr[k]['title_movie'] + '" ></a>');
+      for(var index in movies) {
+        console.log(index, movies[index]);
+        $('#moviesList').append('<a class="movieButton" href="<?=FRONT_ROOT?>movie/details/' + movies[index]['id_movie'] + '"><img class="img-responsive" style="max-width: 10%" src="' + movies[index]['img_movie'] + '" alt="' + movies[index]['title_movie'] + '" ></a>');
       }
 
       

@@ -28,6 +28,9 @@ class RoomController{
 
     }
 
+    public function getByCinema($idCinema){
+        echo json_encode($this->roomDaos->getByCinema($idCinema));
+    }
 
     public function add(){
         if($_SESSION['user'] == null || $_SESSION['user']->getIdRol() != 1){
