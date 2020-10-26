@@ -145,6 +145,7 @@ class MovieDaos extends BaseDaos{
 
         foreach($movies as $jsonMovie){
             $movie = new Movie($jsonMovie['id'], $jsonMovie['original_title'], $jsonMovie['overview'], self::API_IMAGE_URL . $jsonMovie['poster_path'], $jsonMovie['original_language'], $jsonMovie['genre_ids'], $jsonMovie['release_date']);
+
             $resultMovies[] = $movie;
         }
 
