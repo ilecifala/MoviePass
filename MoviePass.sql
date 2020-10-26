@@ -7,7 +7,7 @@ create table genres (id_genre int NOT NULL,
                      constraint unq_nameGenre unique (name_genre));
                      
 create table movies (id_movie int NOT NULL,
-					 title_movie varchar (50) NOT NULL,
+					 title_movie varchar (100) NOT NULL,
                      overview_movie text,
                      img_movie varchar (100),
                      language_movie varchar (2) NOT NULL,
@@ -18,6 +18,10 @@ create table movies (id_movie int NOT NULL,
 create table movies_genres(id_movie int not null,
                     id_genre int not null,
                     constraint unq_moviesGenres unique (id_movie, id_genre));
+                    
+create table rols (id_rol int auto_increment,
+				    description_rol text NOT NULL,
+                    constraint pk_idRol primary key (id_rol));
                      
 create table users (id_user int auto_increment,
 					email_user varchar (50) NOT NULL,
@@ -33,13 +37,10 @@ create table userProfiles (id_user int NOT NULL,
                     lastName_userProfiles varchar (50) NOT NULL,                    
                     dni_userProfiles varchar (10) NOT NULL,
                     constraint unq_idUser unique (id_user),
-                    constraint fk_idIser foreign key (id_user) references users(id_user),
+                    constraint fk_idIser foreign key (id_user) references users(id_user)
                     );
                     
-create table rols (id_rol int auto_increment,
-				    description_rol text NOT NULL,
-                    constraint pk_idRol primary key (id_rol));
-                   
+
 create table cinemas (id_cinema int auto_increment,
 					 name_cinema varchar (50) NOT NULL,
 					 capacity_cinema int,
@@ -73,5 +74,12 @@ create table shows (id_show int auto_increment,
 INSERT INTO rols (id_rol, description_rol) VALUES (1, 'admin');
 INSERT INTO rols (id_rol, description_rol) VALUES (2, 'user');
 
+drop database MoviePass;
+drop table shows;
+drop table movies_genres;
+drop table movies;
+drop table genres;
 
-
+SELECT count(*) from movies;
+SELECT count(*) from movies_genres;
+SELECT * from genres;

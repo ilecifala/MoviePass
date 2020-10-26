@@ -36,6 +36,7 @@ class MovieDaos extends BaseDaos{
         $params['duration_movie'] = $movie->getDuration();
 
         $this->connection = Connection::getInstance();
+        $this->connection->executeNonQuery($query, $params);
 
     }
 
