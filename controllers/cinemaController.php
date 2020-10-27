@@ -44,20 +44,18 @@ class CinemaController{
 
 
         
-        if(isset($_POST['name'], $_POST['capacity'], $_POST['address'], $_POST['ticket'], $_POST['city'], $_POST['province'],$_POST['postal'])){
+        if(isset($_POST['name'], $_POST['address'],$_POST['city'], $_POST['province'],$_POST['postal'])){
 
             $name = $_POST['name'];
-            $capacity = $_POST['capacity'];
             $address = $_POST['address'];
             $city = $_POST['city'];
             $province = $_POST['province'];
             $postal = $_POST['postal'];
-            $ticketPrice = $_POST['ticket'];
 
-            $cinema = new Cinema($name, $capacity, $address, $city, $postal, $province, $ticketPrice);
+            $cinema = new Cinema($name, $address, $city, $postal, $province);
 
             //check for empty fields
-            $required = array('name' => 'nombre', 'capacity' => 'capacidad', 'address' => 'dirección', 'ticket' => 'precio de entrada', 'city' => 'ciudad', 'province' => 'provincia', 'postal' => 'código postal');
+            $required = array('name' => 'nombre',  'address' => 'dirección', 'city' => 'ciudad', 'province' => 'provincia', 'postal' => 'código postal');
             foreach($required as $field => $name) {
                 if (empty($_POST[$field])) {
                   $error = ucfirst($required[$field]) . " no puede estar vacio";
@@ -89,23 +87,21 @@ class CinemaController{
             return;
         }
         //check if form was sent
-        if(isset($_POST['id'], $_POST['name'], $_POST['capacity'], $_POST['address'], $_POST['ticket'], $_POST['city'], $_POST['province'],$_POST['postal'])){
+        if(isset($_POST['id'], $_POST['name'], $_POST['address'], $_POST['city'], $_POST['province'],$_POST['postal'])){
 
             $id = $_POST['id'];
             $name = $_POST['name'];
-            $capacity = $_POST['capacity'];
             $address = $_POST['address'];
             $city = $_POST['city'];
             $province = $_POST['province'];
             $postal = $_POST['postal'];
-            $ticketPrice = $_POST['ticket'];
 
-            $cinema = new Cinema($name, $capacity, $address, $city, $postal, $province, $ticketPrice);
+            $cinema = new Cinema($name, $address, $city, $postal, $province);
             //replace new id with old id
             $cinema->setId($_POST['id']);
 
             //check for empty fields
-            $required = array('name' => 'nombre', 'capacity' => 'capacidad', 'address' => 'dirección', 'ticket' => 'precio de entrada', 'city' => 'ciudad', 'province' => 'provincia', 'postal' => 'código postal');
+            $required = array('name' => 'nombre', 'address' => 'dirección', 'city' => 'ciudad', 'province' => 'provincia', 'postal' => 'código postal');
             foreach($required as $field => $name) {
                 if (empty($_POST[$field])) {
                   $error = ucfirst($required[$field]) . " no puede estar vacio";

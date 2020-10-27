@@ -4,46 +4,24 @@
 		<div class="col-sm-1"></div>
 		<div class="col-sm-2"></div>		
 		<div class="col-sm-6 bg-light boxStyle">
-			<form name="theform" action="" method="POST">
+			<form name="theform" action="" method="get">
                 <?php if(isset($cinema)){?>
                     <input type="hidden" name="id" value="<?=$cinema->getId()?>">
                 <?php }?>
 
                 <div class="form-group">
-                    <label >Pelicula<span class="asteriskField">*</span></label>
-                    <div style="display:inline-block; position:relative;" onclick="openSelectMovie()">
-                        <input  disabled  name="name" type="text" size="20">
-                    </div>​
+                    <label>Pelicula<span class="asteriskField">*</span></label>
+                    <div class="input-group mb-3" onclick="openSelectMovie()">
+                      <div class="input-group-prepend">
+                        <button class="btn btn-outline-secondary" type="button">Seleccionar</button>
+                      </div>
+                      <input id="movieTitle" type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" disabled>
+                      <input id='movieId' type='hidden' name='movieId'>
+                    </div>
                     <br>
+                    <div id="moviePoster"></div>
 
-<!--
-                    Buscar por: 
-                <form method="GET" >
-                    <label for="genres">Genero:</label>
-                    <select name="genre" id="genres" onchange="showResult()">
-                        <option value="all">Todos</option>
-                        <?php foreach($genres as $genre){?>
-                        <option value="<?=$genre->getId();?>"><?=$genre->getName();?></option> 
-                    <?php } ?>
-                    </select>
-
-                    <label for="year">Año:</label>
-                    <select name="year" id="year" onchange="showResult()">
-                        <option value="all">Todos</option>
-                        <?php foreach($years as $year){?>
-                        
-                        <option value="<?=$year?>"><?=$year?></option> 
-                    <?php } ?>
-                    </select>
-                    <input type="text" id="name" size="30" onkeyup="showResult()">
-                </form>
-
-                <div class="moviesList" id="moviesList">
-
-                </div>
-
-                        -->
-
+                <input type="hidden" name="cinemaId" id="cinemaId">
 
                 <div class="form-group">
                     <label>Cine<span class="asteriskField">*</span></label>
@@ -91,8 +69,7 @@
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
             </button>
-        </div>
-        Buscar por: 
+        </div> 
         <form method="GET" >
             <label for="genres">Genero:</label>
             <select name="genre" id="genres" onchange="showResult()">
@@ -129,8 +106,27 @@ $(document).ready(function(){
 
 
 function openSelectMovie(){
-    console.log("asd");
-    $('#myModal').modal('show');
+  //console.log("asd");
+  $('#myModal').modal('show');
+}
+
+function selectMovie(id, title, image){
+  console.log("select movie called" + id + ", " + title + ", " + image);
+  movie = id;
+  //close modal
+  $('#myModal').modal('toggle');
+  //display movie title on input
+  $("#movieTitle").val(title);
+
+  //remove previous poster if exists
+  $("#moviePoster").empty();
+  //display poster
+  $("#moviePoster").append("<img src=\"" + image + "\" width=\"150px\" >");
+  //set cinema id
+  $("#cinemaId").val(id);
+
+  //set movie id
+  $("#movieId").val(id);
 }
 
 
@@ -202,7 +198,7 @@ function showResult(page = 1) {
       }else{
         for(var index in movies) {
           console.log(index, movies[index]);
-          $('#moviesList').append('<img class="img-responsive" style="max-width: 20%" src="' + movies[index]['img_movie'] + '" alt="' + movies[index]['title_movie'] + '" >');
+          $('#moviesList').append('<a href="#" onclick="selectMovie(' + movies[index]['id_movie'] + ',\'' + movies[index]['title_movie'] + '\', \'' + movies[index]['img_movie'] + '\')"><img class="img-responsive" style="max-width: 20%" src="' + movies[index]['img_movie'] + '" alt="' + movies[index]['title_movie'] + '" ></a>');
         }
       }    
       

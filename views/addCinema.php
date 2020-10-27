@@ -14,14 +14,6 @@
                     <label >Nombre<span class="asteriskField">*</span></label>
                     <input class="form-control" name="name" type="text" value="<?php if(isset($cinema)) echo $cinema->getName()?>" size="20"><br>
                 <div class="form-group">
-                    <label>Capacidad<span class="asteriskField">*</span></label>
-                    <input class="form-control" name="capacity" type="number" value="<?php if(isset($cinema)) echo $cinema->getCapacity()?>" min="0" size="20">
-                </div>
-                <div class="form-group">
-                    <label>Precio de entrada<span class="asteriskField">*</span></label>
-                    <input class="form-control" name="ticket" type="number" value="<?php if(isset($cinema)) echo $cinema->getTicketPrice()?>"  min="0" size="20">
-                </div>
-                <div class="form-group">
                     <label>Dirección<span class="asteriskField">*</span></label>
                     <input class="form-control" name="address" type="text" value="<?php if(isset($cinema)) echo $cinema->getAddress()?>" size="20">
                 </div>

@@ -43,12 +43,10 @@ create table userProfiles (id_user int NOT NULL,
 
 create table cinemas (id_cinema int auto_increment,
 					 name_cinema varchar (50) NOT NULL,
-					 capacity_cinema int,
                      address_cinema varchar (50),
                      city_cinema varchar (50),
                      province_cinema varchar (50),
                      zip_cinema varchar (10),
-                     ticketPrice_cinema float,
                      constraint pk_idCinema primary key (id_cinema),
                      constraint unq_cinema unique (name_cinema, address_cinema));
                      
@@ -74,8 +72,33 @@ create table shows (id_show int auto_increment,
 INSERT INTO rols (id_rol, description_rol) VALUES (1, 'admin');
 INSERT INTO rols (id_rol, description_rol) VALUES (2, 'user');
 
-drop database MoviePass;
+INSERT INTO users (email_user, password_user, idRol_user) values ('admin@moviepass.com', '1234', 1);
+
+INSERT INTO cinemas (name_cinema, address_cinema, city_cinema, province_cinema, zip_cinema) VALUES ('Cine Ambassador','Diagonal Centro 1673','Mar del Plata','Buenos Aires','7600');
+INSERT INTO cinemas (name_cinema, address_cinema, city_cinema, province_cinema, zip_cinema) VALUES ('Cines Paseo Aldrey','Sarmiento 2685','Mar del Plata','Buenos Aires','7600');
+INSERT INTO cinemas (name_cinema, address_cinema, city_cinema, province_cinema, zip_cinema) VALUES ('Cinemark Hoyts','Av. Alicia Moreau de Justo 1920','CABA','Buenos Aires','C1107');
+
+INSERT INTO rooms (name_room, price_room ,capacity_room, idCInema_room) VALUES ('Sala A', 500, 100, 1);
+INSERT INTO rooms (name_room, price_room ,capacity_room, idCInema_room) VALUES ('Sala B', 750, 120, 1);
+INSERT INTO rooms (name_room, price_room ,capacity_room, idCInema_room) VALUES ('Sala C', 600, 115, 1);
+
+INSERT INTO rooms (name_room, price_room ,capacity_room, idCInema_room) VALUES ('Sala A', 400, 90, 2);
+INSERT INTO rooms (name_room, price_room ,capacity_room, idCInema_room) VALUES ('Sala B', 650, 110, 2);
+INSERT INTO rooms (name_room, price_room ,capacity_room, idCInema_room) VALUES ('Sala C', 450, 105, 2);
+
+INSERT INTO rooms (name_room, price_room ,capacity_room, idCInema_room) VALUES ('Sala A', 440, 110, 3);
+INSERT INTO rooms (name_room, price_room ,capacity_room, idCInema_room) VALUES ('Sala B', 670, 105, 3);
+INSERT INTO rooms (name_room, price_room ,capacity_room, idCInema_room) VALUES ('Sala C', 430, 128, 3);
+
+SELECT * from rooms;
+
+SELECT * from cinemas;
+
+#drop database MoviePass;
+drop table cinemas;
+drop table rooms;
 drop table shows;
+
 drop table movies_genres;
 drop table movies;
 drop table genres;
@@ -83,3 +106,24 @@ drop table genres;
 SELECT count(*) from movies;
 SELECT count(*) from movies_genres;
 SELECT * from genres;
+
+SELECT s.idMovie_show, s.datetime_show from shows s
+INNER JOIN movies m ON m.id_movie = s.idMovie_show
+INNER JOIN rooms r ON s.idRoom_show = r.id_room
+INNER JOIN cinemas c ON c.id_cinema = r.idCinema_room
+WHERE DAY(s.datetime_show) = DAY(now()) AND s.idMovie_show = 337401;
+
+SELECT * from shows s
+INNER JOIN rooms r ON s.idRoom_show = r.id_room
+INNER JOIN movies m ON m.id_movie = s.idMovie_show
+WHERE s.idRoom_show = 4 AND DAY(s.datetime_show) = DAY(now()) AND DATE_ADD(s.datetime_show, INTERVAL m.duration_movie minute) > 60 ;
+
+#TIMESTAMPDIFF(minute, minute(s.datetime_show + m.duration_movie) , minute('2020-10-27 01:59:09.153')) > 15;
+
+#restar a una fecha
+SELECT DATE_SUB(CURDATE(), INTERVAL 30 minute);
+
+#sumar a una fecha
+SELECT m.duration_movie, DATE_ADD('2020-10-27 00:20:09.153', INTERVAL m.duration_movie minute) from shows s
+INNER JOIN movies m ON s.idMovie_show = m.id_movie
+WHERE minute(DATE_ADD('2020-10-27 00:20:09.153', INTERVAL m.duration_movie minute));

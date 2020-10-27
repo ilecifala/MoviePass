@@ -29,22 +29,21 @@
             <tbody>
 
                 <?php 
-                foreach($shows as $show){?>
+                foreach($shows['shows'] as $index=>$show){?>
                 <tr>
-                    <td><?=$room->getDate()?></td>
-                    <td><?=$room->getMovie()->getName()?></td>
-                    <td><?=$room->getRoom()->getName()?></td>
+                    <td><?=$show->getDatetime()?></td>
+                    <td><?=$show->getIdMovie()->getTitle()?></td>
+                    <td><?=$show->getIdRoom()->getName()?></td>
+                    <td><?=$shows['cinemas'][$index]?></td>
                     
                     <td>
-                        <form action="<?=FRONT_ROOT?>room/modify/" method="post">
-                            <input type="hidden" name="id" value="<?=$room->getId()?>">
-                            <input type="hidden" name="idCinema" value="<?=$cinema->getId()?>">
+                        <form action="<?=FRONT_ROOT?>show/modify/<?=$show->getId()?>">
+                            
                             <button class="material-icons" onclick="this.form.submit()">&#xE254;</i>                             
                         </form>
                         
-                        <form action="<?=FRONT_ROOT?>room/remove/" method="post">
-                            <input type="hidden" name="id" value="<?=$room->getId()?>">
-                            <input type="hidden" name="idCinema" value="<?=$cinema->getId()?>">
+                        <form action="<?=FRONT_ROOT?>show/remove/" method="post">
+                            <input type="hidden" name="id" value="<?=$show->getId()?>">
                             <button class="material-icons" onclick="this.form.submit()">&#xE872;</i> 
                         </form>
                     </td>
