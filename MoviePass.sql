@@ -47,7 +47,6 @@ create table cinemas (id_cinema int auto_increment,
                      city_cinema varchar (50),
                      province_cinema varchar (50),
                      zip_cinema varchar (10),
-                     ticketPrice_cinema float,
                      constraint pk_idCinema primary key (id_cinema),
                      constraint unq_cinema unique (name_cinema, address_cinema));
                      
@@ -91,10 +90,15 @@ INSERT INTO rooms (name_room, price_room ,capacity_room, idCInema_room) VALUES (
 INSERT INTO rooms (name_room, price_room ,capacity_room, idCInema_room) VALUES ('Sala B', 670, 105, 3);
 INSERT INTO rooms (name_room, price_room ,capacity_room, idCInema_room) VALUES ('Sala C', 430, 128, 3);
 
+SELECT * from rooms;
 
+SELECT * from cinemas;
 
-drop database MoviePass;
+#drop database MoviePass;
+drop table cinemas;
+drop table rooms;
 drop table shows;
+
 drop table movies_genres;
 drop table movies;
 drop table genres;
@@ -102,3 +106,24 @@ drop table genres;
 SELECT count(*) from movies;
 SELECT count(*) from movies_genres;
 SELECT * from genres;
+
+SELECT s.idMovie_show, s.datetime_show from shows s
+INNER JOIN movies m ON m.id_movie = s.idMovie_show
+INNER JOIN rooms r ON s.idRoom_show = r.id_room
+INNER JOIN cinemas c ON c.id_cinema = r.idCinema_room
+WHERE DAY(s.datetime_show) = DAY(now()) AND s.idMovie_show = 337401;
+
+SELECT * from shows s
+INNER JOIN rooms r ON s.idRoom_show = r.id_room
+INNER JOIN movies m ON m.id_movie = s.idMovie_show
+WHERE s.idRoom_show = 4 AND DAY(s.datetime_show) = DAY(now()) AND DATE_ADD(s.datetime_show, INTERVAL m.duration_movie minute) > 60 ;
+
+#TIMESTAMPDIFF(minute, minute(s.datetime_show + m.duration_movie) , minute('2020-10-27 01:59:09.153')) > 15;
+
+#restar a una fecha
+SELECT DATE_SUB(CURDATE(), INTERVAL 30 minute);
+
+#sumar a una fecha
+SELECT m.duration_movie, DATE_ADD('2020-10-27 00:20:09.153', INTERVAL m.duration_movie minute) from shows s
+INNER JOIN movies m ON s.idMovie_show = m.id_movie
+WHERE minute(DATE_ADD('2020-10-27 00:20:09.153', INTERVAL m.duration_movie minute));

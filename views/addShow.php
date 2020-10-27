@@ -10,12 +10,13 @@
                 <?php }?>
 
                 <div class="form-group">
-                    <label >Pelicula<span class="asteriskField">*</span></label>
+                    <label>Pelicula<span class="asteriskField">*</span></label>
                     <div class="input-group mb-3" onclick="openSelectMovie()">
                       <div class="input-group-prepend">
                         <button class="btn btn-outline-secondary" type="button">Seleccionar</button>
                       </div>
                       <input id="movieTitle" type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" disabled>
+                      <input id='movieId' type='hidden' name='movieId'>
                     </div>
                     <br>
                     <div id="moviePoster"></div>
@@ -105,7 +106,7 @@ $(document).ready(function(){
 
 
 function openSelectMovie(){
-  console.log("asd");
+  //console.log("asd");
   $('#myModal').modal('show');
 }
 
@@ -123,6 +124,9 @@ function selectMovie(id, title, image){
   $("#moviePoster").append("<img src=\"" + image + "\" width=\"150px\" >");
   //set cinema id
   $("#cinemaId").val(id);
+
+  //set movie id
+  $("#movieId").val(id);
 }
 
 

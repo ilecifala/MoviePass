@@ -49,11 +49,34 @@ class ShowController{
         $years = array_column($this->movieDaos->getMoviesYear(),'year');
 
         $cinemas = $this->cinemaDaos->getAllWithRooms();
-        
-        require_once(VIEWS_PATH . "header.php");
-        require_once(VIEWS_PATH . "addShow.php");
-        require_once(VIEWS_PATH . "footer.php");
-        
+
+        if ($_GET){
+            $idMovie = $_GET['movieId'];
+            $date = $_GET['time'];
+            $idRoom = $_GET['rooms'];
+
+            $show = new Show($idMovie, $idRoom, $date);
+
+            //do the verification (SQL, PHP?)
+            $result = $this->showDaos->verifyDate($show);
+            if (!empty($result)){
+                echo 'No se puede agregar la película';
+
+                //acomodar esto
+                require_once(VIEWS_PATH . "header.php");
+                require_once(VIEWS_PATH . "addShow.php");
+                require_once(VIEWS_PATH . "footer.php");
+
+            } else{
+                $this->showDaos->add($show);
+                $this->index();
+            }
+            
+        } else {
+            require_once(VIEWS_PATH . "header.php");
+            require_once(VIEWS_PATH . "addShow.php");
+            require_once(VIEWS_PATH . "footer.php");
+        }
     }
 
     public function remove($id){
