@@ -49,27 +49,43 @@ class ShowController{
         $years = array_column($this->movieDaos->getMoviesYear(),'year');
 
         $cinemas = $this->cinemaDaos->getAllWithRooms();
-
-        if ($_GET){
-            $idMovie = $_GET['movieId'];
-            $date = $_GET['time'];
-            $idRoom = $_GET['rooms'];
+        
+        if ($_POST){
+            
+            $idMovie = $_POST['movieId'];
+            $date = $_POST['time'];
+            $idRoom = $_POST['roomId'];
+            $idCinema = $_POST['cinemaId'];
 
             $show = new Show($idMovie, $idRoom, $date);
 
             //do the verification (SQL, PHP?)
-            $result = $this->showDaos->verifyDate($show);
-            if (!empty($result)){
-                echo 'No se puede agregar la película';
-
-                //acomodar esto
+            $result = $this->showDaos->verifyDate($show, $idCinema);
+            $error = null;
+            echo '<pre>';
+            var_dump($result);
+            echo '</pre>';
+            if(!empty($result)){
+                foreach($result as $res){
+                    if($res['id_cinema'] != $idCinema){
+                        $error = 'No se puede agregar la misma película un mismo día a distintos cines';
+                    }
+                }
+            }
+            $result = $this->showDaos->verifyDatetime($show);
+            foreach($result as $res){
+                echo abs($res['dif_minutes']).'adadasdadad';
+                if (abs($res['dif_minutes']) < 15){
+                    $error = 'Ya hay una función en ese horario.';
+                }
+            }
+            if($error == null){
+                $this->showDaos->add($show);
+                $this->index();
+            } else {
                 require_once(VIEWS_PATH . "header.php");
                 require_once(VIEWS_PATH . "addShow.php");
                 require_once(VIEWS_PATH . "footer.php");
-
-            } else{
-                $this->showDaos->add($show);
-                $this->index();
             }
             
         } else {

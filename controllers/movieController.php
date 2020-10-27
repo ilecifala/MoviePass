@@ -93,4 +93,33 @@ class MovieController{
         echo "</pre>";
     }
 
+    public function displayBillboard($genreRequired = "all", $yearRequired = "all", $page = 1){
+        
+        $movies = $this->movieDaos->getAllMoviesInBillboard();
+        
+        $genres = $this->genreDaos->getAll(); //this is used later in the view to display a dropdown
+
+        $page = intval($page);
+
+        
+        $years = array_column($this->movieDaos->getMoviesYear(),'year');
+
+
+
+        
+        //pagination
+        $limit = 16;//limit to show per page
+        $totalMovies = count($movies);
+        $totalPages = intval(ceil($totalMovies / $limit));
+        $offset = ($page - 1) * $limit;
+        if($offset < 0) $offset = 0;
+
+        $movies = array_slice($movies, $offset, $limit);
+        
+
+        require_once(VIEWS_PATH . "header.php");
+        require_once(VIEWS_PATH . "index.php");
+        require_once(VIEWS_PATH . "footer.php");
+    }
+
 }

@@ -4,7 +4,7 @@
 		<div class="col-sm-1"></div>
 		<div class="col-sm-2"></div>		
 		<div class="col-sm-6 bg-light boxStyle">
-			<form name="theform" action="" method="get">
+			<form name="theform" action="" method="POST">
                 <?php if(isset($cinema)){?>
                     <input type="hidden" name="id" value="<?=$cinema->getId()?>">
                 <?php }?>
@@ -21,11 +21,9 @@
                     <br>
                     <div id="moviePoster"></div>
 
-                <input type="hidden" name="cinemaId" id="cinemaId">
-
                 <div class="form-group">
                     <label>Cine<span class="asteriskField">*</span></label>
-                    <select name="cinemas" id="cinemas" onchange="getRooms()">
+                    <select name="cinemaId" id="cinemas" onchange="getRooms()">
                     <?php foreach($cinemas as $cinema){?>
                     
                     <option value="<?=$cinema->getId()?>"><?=$cinema->getName()?></option>
@@ -34,15 +32,14 @@
                 </div>
                 <div class="form-group" display="none">
                     <label>Sala<span class="asteriskField">*</span></label>
-                    <select name="rooms" id="rooms">
+                    <select name="roomId" id="rooms">
                     </select>
                 </div>
                 <div class="form-group">
                     <label>Fecha<span class="asteriskField">*</span></label>
                     <input type="datetime-local" id="time" name="time">
                 </div>
-                <input type="hidden" name="idCinema" value="<?=$idCinema?>">
-                <input type="hidden" name="id" value="<?php if(isset($room)) echo $room->getId()?>">
+            
                 <?php if(isset($error)){?>
                     <?=$error?>
                 <?php }?>
@@ -122,9 +119,7 @@ function selectMovie(id, title, image){
   $("#moviePoster").empty();
   //display poster
   $("#moviePoster").append("<img src=\"" + image + "\" width=\"150px\" >");
-  //set cinema id
-  $("#cinemaId").val(id);
-
+  
   //set movie id
   $("#movieId").val(id);
 }

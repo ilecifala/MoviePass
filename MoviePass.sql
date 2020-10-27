@@ -107,18 +107,26 @@ SELECT count(*) from movies;
 SELECT count(*) from movies_genres;
 SELECT * from genres;
 
-SELECT s.idMovie_show, s.datetime_show from shows s
+#no se puede repetir la misma pelicula el mismo dia (en ningún cine)
+SELECT r.idCinema_room, s.idMovie_show, s.datetime_show from shows s
 INNER JOIN movies m ON m.id_movie = s.idMovie_show
 INNER JOIN rooms r ON s.idRoom_show = r.id_room
 INNER JOIN cinemas c ON c.id_cinema = r.idCinema_room
-WHERE DAY(s.datetime_show) = DAY(now()) AND s.idMovie_show = 337401;
+WHERE DAY(s.datetime_show) = DAY(now()) AND s.idMovie_show = 337401 AND r.idCinema_room = (SELECT r.idCinema_room from rooms
+																							WHERE s.idRoom_show = r.id_room);
 
-SELECT * from shows s
+SELECT s.id_show, TIMESTAMPDIFF(minute, DATE_ADD(DATE_ADD(s.datetime_show, INTERVAL 15 minute),INTERVAL m.duration_movie minute), '2020-10-27 12:09:00') as 'Dif minutos' from shows s
 INNER JOIN rooms r ON s.idRoom_show = r.id_room
 INNER JOIN movies m ON m.id_movie = s.idMovie_show
-WHERE s.idRoom_show = 4 AND DAY(s.datetime_show) = DAY(now()) AND DATE_ADD(s.datetime_show, INTERVAL m.duration_movie minute) > 60 ;
+WHERE s.idRoom_show = 1;
 
-#TIMESTAMPDIFF(minute, minute(s.datetime_show + m.duration_movie) , minute('2020-10-27 01:59:09.153')) > 15;
+SELECT * from shows;
+
+SELECT * from movies where id_movie = 337401;
+
+#DATE_ADD(s.datetime_show, INTERVAL m.duration_movie minute) > 60 ;
+
+#SELECT TIMESTAMPDIFF(minute, DATE_ADD('2020-10-27 00:06:00', INTERVAL 30 minute), '2020-10-29 02:00:00');
 
 #restar a una fecha
 SELECT DATE_SUB(CURDATE(), INTERVAL 30 minute);
@@ -127,3 +135,17 @@ SELECT DATE_SUB(CURDATE(), INTERVAL 30 minute);
 SELECT m.duration_movie, DATE_ADD('2020-10-27 00:20:09.153', INTERVAL m.duration_movie minute) from shows s
 INNER JOIN movies m ON s.idMovie_show = m.id_movie
 WHERE minute(DATE_ADD('2020-10-27 00:20:09.153', INTERVAL m.duration_movie minute));
+
+SELECT * from shows;
+
+SELECT c.id_cinema, s.idMovie_show, s.datetime_show from shows s 
+INNER JOIN movies m ON m.id_movie = s.idMovie_show 
+INNER JOIN rooms r ON s.idRoom_show = r.id_room 
+INNER JOIN cinemas c ON c.id_cinema = r.idCinema_room WHERE DAY(s.datetime_show) = DAY(now()) AND s.idMovie_show = '337401' AND r.idCinema_room != 2;
+
+SELECT * from movies m
+INNER JOIN shows s ON s.idMovie_show = m.id_movie
+WHERE s.datetime_show > now()
+group by m.id_movie;
+
+
