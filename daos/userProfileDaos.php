@@ -20,7 +20,7 @@ class UserProfileDaos extends BaseDaos{
     }
 
     public function modify($user){
-        return parent::_modify($user, $user->getId(), 'id');
+        return parent::_modify($user, $user->getIdUser(), 'idUser');
     }
 
 }

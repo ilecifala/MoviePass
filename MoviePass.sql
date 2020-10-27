@@ -32,12 +32,12 @@ create table users (id_user int auto_increment,
                     constraint fk_idRol foreign key (idRol_user) references rols (id_rol),
                     constraint unq_emailUser unique (email_user));
 
-create table userProfiles (id_user int NOT NULL,
-                    firstName_userProfiles varchar (50) NOT NULL,
-                    lastName_userProfiles varchar (50) NOT NULL,                    
-                    dni_userProfiles varchar (10) NOT NULL,
-                    constraint unq_idUser unique (id_user),
-                    constraint fk_idIser foreign key (id_user) references users(id_user)
+create table userProfiles (idUser_userprofile int NOT NULL,
+                    firstName_userprofile varchar (50),
+                    lastName_userprofile varchar (50),                    
+                    dni_userprofile varchar (10),
+                    constraint unq_idUser unique (idUser_userprofile),
+                    constraint fk_idIser foreign key (idUser_userprofile) references users(id_user)
                     );
                     
 
