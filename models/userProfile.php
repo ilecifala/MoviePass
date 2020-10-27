@@ -4,25 +4,25 @@ namespace models;
 
 class UserProfile{
 
-    private $id;
+    private $idUser;
     private $firstName;
     private $lastName;
     private $dni;
 
 
-    public function __construct($id = '', $firstName = '', $lastName = '', $dni = ''){
-        $this->id = $id;
+    public function __construct($idUser = '', $firstName = '', $lastName = '', $dni = ''){
+        $this->idUser = $idUser;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->dni = $dni;
     }
 
-    public function getId(){
-		return $this->id;
+    public function getIdUser(){
+		return $this->idUser;
 	}
 
-	public function setId($id){
-		$this->id = $id;
+	public function setIdUser($idUser){
+		$this->idUser = $idUser;
 	}
 
     public function getFirstName(){

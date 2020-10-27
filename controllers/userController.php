@@ -4,12 +4,15 @@ namespace controllers;
 use models\user as User;
 use models\userProfile as Profile;
 use daos\userDaos as UserDaos;
+use daos\userProfileDaos as UserProfileDaos;
 
 class UserController{
     private $daos;
+    private $userProfileDaos;
 
     public function __construct(){
         $this->daos = new UserDaos();
+        $this->userProfileDaos = new UserProfileDaos();
     }
 
     public function signup(){
@@ -67,15 +70,32 @@ class UserController{
 
     public function logout(){
         $_SESSION['user'] = null;
+        $_SESSION['profile'] = null;
         $this->login();
     }
 
     public function profile(){
-        if(!empty($_POST['firstName'])){
-            $firstName = $_POST['firstName'];
-            $profile = new Profile();
-            $profile->setFirstName($firstName);
-            $_POST['profile'] = $profile;
+        if($_POST){
+            if(!isset($_SESSION['profile'])){
+                $profile = new Profile();
+                if($_POST['firstName'] != null){
+                    $profile->setFirstName($_POST['firstName']);
+                }
+                if($_POST['lastName'] != null){
+                    $profile->setLastName($_POST['lastname']);
+                }
+                if($_POST['dni'] != null){
+                    $profile->setDni($_POST['dni']);
+                }
+                $profile->setIdUser($_SESSION['user']->getId());
+                $_SESSION['profile'] = $profile;
+                $this->userProfileDaos->add($profile); 
+            }else{
+                $profile = $_SESSION['profile'];
+                echo $profile->getLastName();
+                $this->userProfileDaos->modify($profile);
+            }
+            
         }
         require_once(VIEWS_PATH . "header.php");
         require_once(VIEWS_PATH . "profile.php");

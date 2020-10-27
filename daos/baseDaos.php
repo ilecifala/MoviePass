@@ -214,7 +214,11 @@ abstract class BaseDaos{
         $query = substr($query, 0, -1);
 
         //add where to query
-        $query .= " WHERE {$_property}_$this->className = $_value";     
+        echo $_property . '<br>';
+
+        $query .= " WHERE {$_property}_$this->className = $_value";
+        
+        echo $query;
 
         //call db
         $this->connection = Connection::getInstance();
