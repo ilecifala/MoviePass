@@ -10,17 +10,9 @@
             <option value="<?=$genre->getId();?>" <?php if($genre->getId() == $genreRequired) echo "selected=\"selected\""?>><?=$genre->getName();?></option> 
         <?php } ?>
         </select>
-
-        <label for="year">Año:</label>
-        <select name="year" id="year" onchange="showResult()">
-            <option value="all">Todos</option>
-            <?php foreach($years as $year){?>
-            
-            <option value="<?=$year?>"><?=$year?></option> 
-        <?php } ?>
-        </select>
-        <input type="text" id="name" size="30" onkeyup="showResult(this.value)">
     </form>
+
+    <input type="date" id="time" name="time">
 
     <div class="moviesList" id="moviesList">
         <?php foreach($movies as $movie){?> 
@@ -33,14 +25,14 @@
       <ul class="pagination justify-content-center">
         <?php if($offset != 0){?>
         <li class="page-item">
-          <a class="page-link" href="<?= FRONT_ROOT . "movie/show/" . $genreRequired. "/" . $yearRequired . "/" . ($page-1)?>" >Previous</a>
+          <a class="page-link" href="<?= FRONT_ROOT . "movie/displayBillboard/" . $genreRequired. "/" . $yearRequired . "/" . ($page-1)?>" >Previous</a>
         </li>
         <?php } ?>
         <?php //this could probably be optimized 
         for($i=$page-3; $i < $page;$i++){
           if($i > 0 ){?>
           <li class="page-item">
-            <a class="page-link" href="<?= FRONT_ROOT . "movie/show/" . $genreRequired. "/" . $yearRequired . "/" . $i?>"><?=$i?></a>
+            <a class="page-link" href="<?= FRONT_ROOT . "movie/displayBillboard/" . $genreRequired. "/" . $yearRequired . "/" . $i?>"><?=$i?></a>
           </li>
         <?php } }?>
 
@@ -51,14 +43,14 @@
           <?php for($i=$page+1; $i < $page+3;$i++){
           if($i <= $totalPages ){?>
           <li class="page-item">
-            <a class="page-link" href="<?= FRONT_ROOT . "movie/show/" . $genreRequired. "/" . $yearRequired . "/" . $i?>"><?=$i?></a>
+            <a class="page-link" href="<?= FRONT_ROOT . "movie/displayBillboard/" . $genreRequired. "/" . $yearRequired . "/" . $i?>"><?=$i?></a>
           </li>
         <?php } }?>
 
 
         <?php if($page < $totalPages){?>
         <li class="page-item">
-          <a class="page-link" href="<?= FRONT_ROOT . "movie/show/" . $genreRequired. "/" . $yearRequired . "/" . ($page+1)?>">Next</a>
+          <a class="page-link" href="<?= FRONT_ROOT . "movie/displayBillboard/" . $genreRequired. "/" . $yearRequired . "/" . ($page+1)?>">Next</a>
         </li>
         <?php }?>
     </ul>

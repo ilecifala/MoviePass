@@ -8,6 +8,7 @@ use models\room as Room;
 class ShowDaos extends BaseDaos{
 
     const TABLE_NAME = "shows";
+    const SHOW_INTERVAL = 15;
 
     public function __construct(){
         parent::__construct(self::TABLE_NAME, 'Show');        
@@ -75,16 +76,17 @@ class ShowDaos extends BaseDaos{
         return parent::_modify($show, $show->getId(), "id");
     }
 
-    public function verifyDate($show){
+    public function verifyDate($show, $idCinema){
         
-        $query = 'SELECT s.idMovie_show, s.datetime_show from ' . self::TABLE_NAME . ' s
+        $query = 'SELECT c.id_cinema, s.idMovie_show, s.datetime_show from ' . self::TABLE_NAME . ' s
         INNER JOIN movies m ON m.id_movie = s.idMovie_show
         INNER JOIN rooms r ON s.idRoom_show = r.id_room
         INNER JOIN cinemas c ON c.id_cinema = r.idCinema_room
-        WHERE DAY(s.datetime_show) = DAY(:datetime_show) AND s.idMovie_show = :id_movie;';
+        WHERE DAY(s.datetime_show) = DAY(:datetime_show) AND s.idMovie_show = :id_movie AND r.idCinema_room != :id_cinema;';
         
         $parameters['datetime_show'] = $show->getDatetime();
         $parameters['id_movie'] = $show->getIdMovie();
+        $parameters['id_cinema'] = $idCinema;
         
         $connection = Connection::getInstance();
         $resultSet = $connection->execute($query,$parameters);
@@ -93,7 +95,19 @@ class ShowDaos extends BaseDaos{
     }
 
     public function verifyDatetime($show){
-        //the 15 min verification
+        $query = 'SELECT s.id_show, TIMESTAMPDIFF(minute, DATE_ADD(DATE_ADD(s.datetime_show, INTERVAL '. self::SHOW_INTERVAL .' minute),INTERVAL m.duration_movie minute), :datetime_show) as dif_minutes from shows s
+        INNER JOIN rooms r ON s.idRoom_show = r.id_room
+        INNER JOIN movies m ON m.id_movie = s.idMovie_show
+        WHERE s.idRoom_show = :idRoom_show;';
+
+        $parameters['datetime_show'] = $show->getDatetime();
+        $parameters['idRoom_show'] = $show->getIdRoom();
+        
+        $connection = Connection::getInstance();
+        $resultSet = $connection->execute($query,$parameters);
+
+        
+        return $resultSet;
     }
 }
 ?>

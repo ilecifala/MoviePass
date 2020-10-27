@@ -152,5 +152,26 @@ class MovieDaos extends BaseDaos{
 
         return $resultMovies;
     }
+
+
+
+    public function getAllMoviesInBillboard(){
+        $query = 'SELECT * from movies m
+        INNER JOIN shows s ON s.idMovie_show = m.id_movie
+        WHERE s.datetime_show > now()
+        GROUP BY m.id_movie;';
+
+        $this->connection = Connection::getInstance();
+        $resultSet = $this->connection->execute($query);
+        $resultMovies = array();
+        foreach($resultSet as $result){
+            $movie = new Movie($result['id_movie'], $result['title_movie'], $result['overview_movie'], $result['img_movie'], $result['language_movie'], $result['releaseDate_movie'], $result['duration_movie']);
+
+            $resultMovies[] = $movie;
+        }
+
+        return $resultMovies;
+    }
+
 }
 ?>
