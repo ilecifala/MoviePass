@@ -10,13 +10,15 @@ class Cinema{
     private $city;
     private $zip;
     private $province;
+    private $rooms;
 
-    public function __construct($name = "vacio", $address = "vacio", $city = "vacio", $zip = -1, $province = "vacio"){
+    public function __construct($name = "", $address = "", $city = "", $zip = -1, $province = "", $rooms = array()){
         $this->name = $name;
         $this->address = $address;
         $this->city = $city;
         $this->zip = $zip;
         $this->province = $province;
+        $this->rooms = $rooms;
     }
 
     public function getId(){
@@ -65,6 +67,14 @@ class Cinema{
 
     public function setProvince($province){
         $this->province = $province;
+    }
+
+    public function getRooms(){
+        return $this->rooms;
+    }
+
+    public function setRooms($rooms){
+        $this->rooms = $rooms;
     }
 
 }

@@ -7,7 +7,7 @@ class CinemaController{
     private $cinemaDaos;
 
     public function __construct(){
-        $this->cinemaDaos = new CinemaDaos();
+        $this->cinemaDaos = CinemaDaos::getInstance();
     }
 
     public function index(){

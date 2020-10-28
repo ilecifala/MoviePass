@@ -4,6 +4,7 @@ namespace models;
 
 class Show{
     private $id;
+    //Estos dos se llaman id pero en realidad es el objeto
     private $idMovie;
     private $idRoom;
     private $datetime;

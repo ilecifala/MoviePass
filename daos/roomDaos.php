@@ -1,41 +1,96 @@
 <?php
 namespace daos;
-use daos\baseDaos as BaseDaos;
+use models\room as Room;
 
-class RoomDaos extends BaseDaos{
+class RoomDaos{
 
     const TABLE_NAME = "rooms";
 
-    public function __construct(){
-        parent::__construct(self::TABLE_NAME, 'Room');        
+    private static $instance = null;
+
+    private $rooms = array();
+
+    private function __construct(){
+        $query = "SELECT * FROM " . self::TABLE_NAME;
+
+        $connection = Connection::getInstance();
+
+        $roomsArray = $connection->execute($query);
+
+        foreach($roomsArray as $roomArray){
+            $room = new Room($roomArray['name_room'], $roomArray['price_room'], $roomArray['capacity_room']);
+            $room->setId($roomArray['id_room']);
+
+
+            //$room->setShows(RoomDaos::getInstance()->getAll());
+            //array_push($this->rooms[$roomArray['idCinema_room']], $room);
+            $this->rooms[$roomArray['idCinema_room']][] = $room;
+        }
     }
 
-    public function getAll(){
-        return parent::_getAll();
+    public static function getInstance(){
+
+        if(!self::$instance){
+            self::$instance = new RoomDaos();
+        }
+        return self::$instance;
     }
 
     public function exists($id){
-        return parent::_exists($id);
+        foreach($this->rooms as $room){
+            if($room->getId() == $id){
+                return true;
+            }
+        }
+        return false;
     }
 
     public function getById($id){
-        return parent::_getByProperty($id, 'id');
+        if(isset($this->rooms[$id])){
+            return $this->rooms[$id];
+        }
+        return array();
     }
 
     public function getByCinema($idCinema){
-        return parent::_getAllByProperty($idCinema, 'idCinema');
+        $result = array();
+        foreach($this->rooms as $room){
+
+        }
     }
 
-    public function add($room){
-        return parent::_add($room);
+    public function add($room, $idCinema){
+        try{
+            //insert into db
+            $query = "INSERT INTO " . self::TABLE_NAME. "
+                                        (name_room, price_room, capacity_room, idCinema_room) VALUES
+                                        (:name_room, :price_room, :capacity_room, :idCinema_room)";
+ 
+            $params['name_room'] = $room->getName();
+            $params['price_room'] = $room->getPrice();
+            $params['capacity_room'] = $room->getCapacity();
+            $params['idCinema_room'] = $idCinema;
+
+            $this->connection = Connection::getInstance();
+            $this->connection->ExecuteNonQuery($query, $params);
+            
+            $room->setId($this->connection->getlastId());
+            //insert into array
+            $roomArray['idCinema_room'][] = $room;
+
+            return $room->getId();
+
+        } catch (\Exception $ex){
+            throw $ex;
+        }
     }
 
     public function remove($id){
-        return parent::_remove($id, 'id');
+        
     }
 
     public function modify($room){        
-        return parent::_modify($room, $room->getId(), "id");
+        
     }
 }
 ?>
