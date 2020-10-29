@@ -69,7 +69,7 @@ function showResult() {
 
       for(var index in movies) {
         console.log(index, movies[index]);
-        $('#moviesList').append('<a class="movieButton" href="<?=FRONT_ROOT?>movie/details/' + movies[index]['id_movie'] + '"><img class="img-responsive" style="max-width: 10%" src="' + movies[index]['img_movie'] + '" alt="' + movies[index]['title_movie'] + '" ></a>');
+        $('#moviesList').append('<a class="movieButton" href="<?=FRONT_ROOT?>movie/details/' + movies[index]['id'] + '"><img class="img-responsive" style="max-width: 10%" src="' + movies[index]['img'] + '" alt="' + movies[index]['title'] + '" ></a>');
       }
 
       
