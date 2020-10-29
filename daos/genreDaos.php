@@ -6,9 +6,17 @@ use models\genre as Genre;
 class GenreDaos  extends BaseDaos{
 
     const TABLE_NAME = 'genres';
+    private static $instance = null;
 
-    public function __construct(){
+    private function __construct(){
         parent::__construct(self::TABLE_NAME, 'Genre');        
+    }
+
+    public static function getInstance(){
+        if(self::$instance == null){
+            self::$instance = new GenreDaos();
+        }
+        return self::$instance;
     }
 
     public function getAll(){
@@ -25,6 +33,23 @@ class GenreDaos  extends BaseDaos{
 
     public function add($genre){
         return parent::_add($genre, true);
+    }
+
+    public function getByMovie($idMovie){
+        $query ="SELECT g.id_genre,g.name_genre FROM movies_genres mg  INNER JOIN genres g ON g.id_genre = mg.id_genre
+        WHERE id_movie = :id_movie";
+        $params = array();
+        $params['id_movie'] = $idMovie;
+
+        $this->connection = Connection::getInstance();
+        $genres = array();      
+        foreach($this->connection->executeWithAssoc($query, $params) as $genre){
+            
+            array_push($genres, new Genre($genre['id_genre'], $genre['name_genre']));
+
+        }
+        return $genres;
+
     }
 
     public function update(){

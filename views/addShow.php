@@ -188,12 +188,16 @@ function showResult(page = 1) {
 
       var movies = JSON.parse(this.responseText);
 
+      //console.log(movies);
+
       if(movies.length == 0){
         $('#moviesList').append('No se encontraron resultados');
       }else{
         for(var index in movies) {
-          console.log(index, movies[index]);
-          $('#moviesList').append('<a href="#" onclick="selectMovie(' + movies[index]['id_movie'] + ',\'' + movies[index]['title_movie'] + '\', \'' + movies[index]['img_movie'] + '\')"><img class="img-responsive" style="max-width: 20%" src="' + movies[index]['img_movie'] + '" alt="' + movies[index]['title_movie'] + '" ></a>');
+          //console.log(index, movies[index]);
+          $('#moviesList').append('<a href="#" onclick="selectMovie(' + movies[index]['id'] + ',\'' + movies[index]['title'] + '\', \'' + movies[index]['img'] + '\')"><img class="img-responsive" style="max-width: 20%" src="' + movies[index]['img'] + '" alt="' + movies[index]['title'] + '" ></a>');
+          console.log(movies[index]['id']);
+          //$('#moviesList').append(movies[index]['id_movie']);
         }
       }    
       

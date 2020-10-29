@@ -11,7 +11,7 @@ class MovieController{
 
     public function __construct(){
         $this->movieDaos = new MovieDaos();
-        $this->genreDaos = new GenreDaos();
+        $this->genreDaos = GenreDaos::getInstance();
     }
 
     public function update(){
@@ -94,8 +94,10 @@ class MovieController{
     }
 
     public function displayBillboard($genreRequired = "all", $yearRequired = "all", $page = 1){
-        
+
+
         $movies = $this->movieDaos->getAllMoviesInBillboard();
+        var_dump($movies);
         
         $genres = $this->genreDaos->getAll(); //this is used later in the view to display a dropdown
 

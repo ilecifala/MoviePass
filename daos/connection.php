@@ -5,50 +5,62 @@
     use \Exception as Exception;
     use daos\queryType as QueryType;
 
-    class Connection
-    {
+    class Connection{
+        //variable para guardar la instancia de pdo
         private $pdo = null;
+        //variable para guardar la instancia de pdoStatement
         private $pdoStatement = null;
+
+        //variable para guardiar la instancia del singleton
         private static $instance = null;
 
-        private function __construct()
-        {
-            try
-            {
+        private function __construct(){
+            try{
+                //instancia un nuevo PDO con los datos de la db (tipo de db, nombre, usuario, pass, etc)
                 $this->pdo = new PDO("mysql:host=".DB_HOST."; dbname=".DB_NAME, DB_USER, DB_PASS);
+                //setea para que el pdo nos tire los errores de la db si los hay.
                 $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             }
-            catch(Exception $ex)
-            {
+            catch(Exception $ex){
+                //tira excepción 
                 throw $ex;
             }
         }
 
-        public static function getInstance()
-        {
+        //metodo para obtener la instancia del singleton //en lugar de "new Connection" usamos "Connection::getInstance()"
+        public static function getInstance(){
             if(self::$instance == null)
                 self::$instance = new Connection();
 
             return self::$instance;
         }
 
-        public function execute($query, $parameters = array(), $queryType = QueryType::Query)
-	    {
-            try
-            {
+        //ejecuta query y devuelve el resultado de fetchALl
+        public function execute($query, $parameters = array(), $queryType = QueryType::Query){
+            try{
+                //prepara la query
                 $this->prepare($query);
                 
+                //bindea los parametros (reemplaza los :name con la variable que pasamos por parametro)
                 $this->bindParameters($parameters, $queryType);
                 
+                //lo ejecuta
                 $this->pdoStatement->execute();
 
+                //devuelve el resultado
                 return $this->pdoStatement->fetchAll();
             }
-            catch(Exception $ex)
-            {
+            catch(Exception $ex)            {
                 throw $ex;
             }
         }
+
+        /*
+        0 => [],
+        1 => [],
+        2 => []
+
+        */
 
         public function executeWithAssoc($query, $parameters = array()){
             try{
@@ -64,11 +76,14 @@
                 throw $ex;
             }
         }
+
+        /*
+        [], [], []
+        */
         
-        public function executeNonQuery($query, $parameters = array(), $queryType = QueryType::Query)
-	    {            
-            try
-            {
+        //ejecuta una query y devuelve la cantidad de filas afectadas
+        public function executeNonQuery($query, $parameters = array(), $queryType = QueryType::Query){            
+            try{
                 $this->prepare($query);
                 
                 $this->bindParameters($parameters, $queryType);
@@ -77,30 +92,26 @@
 
                 return $this->pdoStatement->rowCount();
             }
-            catch(Exception $ex)
-            {
+            catch(Exception $ex){
                 throw $ex;
             }        	    	
         }
         
-        private function prepare($query)
-        {
-            try
-            {
+        //llama al metodo Prepare de PDO, el cual devuelve un pdoStatement (y lo guardamos)
+        private function prepare($query){
+            try{
                 $this->pdoStatement = $this->pdo->prepare($query);
-            }
-            catch(Exception $ex)
-            {
+            }catch(Exception $ex){
                 throw $ex;
             }
         }
-        
-        private function bindParameters($parameters = array(), $queryType = QueryType::Query)
-        {
+
+        //bindea los parametros (reemplaza los :name con la variable que pasamos por parametro)
+        //usa el pdoStatement que preparamos en el metodo de arriba
+        private function bindParameters($parameters = array(), $queryType = QueryType::Query){
             $i = 0;
 
-            foreach($parameters as $parameterName => $value)
-            {                
+            foreach($parameters as $parameterName => $value){                
                 $i++;
                 if($queryType == QueryType::Query)
                     $this->pdoStatement->bindParam(":".$parameterName, $parameters[$parameterName]);

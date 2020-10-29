@@ -1,7 +1,7 @@
 <?php
 namespace models;
 
-class Genre{
+class Genre implements \JsonSerializable{
 
     private $id;
     private $name;
@@ -26,5 +26,9 @@ class Genre{
     public function setName($name){
 		$this->name = $name;
     }
+
+    public function jsonSerialize(){
+      return get_object_vars($this);
+  }
 }
 ?>

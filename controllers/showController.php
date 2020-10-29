@@ -17,7 +17,7 @@ class ShowController{
     public function __construct(){
         $this->showDaos = new ShowDaos();       
         $this->cinemaDaos = new CinemaDaos();  
-        $this->genreDaos = new GenreDaos();  
+        $this->genreDaos = GenreDaos::getInstance();  
         $this->movieDaos = new MovieDaos();  
     }
 

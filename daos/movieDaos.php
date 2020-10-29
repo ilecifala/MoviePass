@@ -13,7 +13,7 @@ class MovieDaos extends BaseDaos{
     }
 
     public function getAll(){
-        return parent::_getAll();
+        return $this->constructMovies(parent::_getAll());
     }
 
     public function exists($id){
@@ -83,13 +83,21 @@ class MovieDaos extends BaseDaos{
         $query .= " LIMIT $qty OFFSET $offset;";
         //echo $query;
 
-        
-
-
+  
 
         $this->connection = Connection::getInstance();
         
-        return $this->connection->executeWithAssoc($query, $params);
+        $moviesArray = $this->connection->executeWithAssoc($query, $params);
+        $movies = array();
+        foreach($moviesArray as $movieArray){
+            //get genres
+            $genreDaos = GenreDaos::getInstance();
+            $movie = new Movie($movieArray['id_movie'], $movieArray['title_movie'], $movieArray['overview_movie'], $movieArray['img_movie'], $movieArray['language_movie'], $genreDaos->getByMovie($movieArray['id_movie']), $movieArray['releaseDate_movie'], $movieArray['duration_movie']);
+            
+            array_push($movies, $movie);
+        }
+        return $this->constructMovies($movies);
+
         
     }
 
@@ -99,6 +107,25 @@ class MovieDaos extends BaseDaos{
         $connection = Connection::getInstance();
         
         return $connection->executeWithAssoc($query);
+    }
+
+    const DEFAULT_POSTER = FRONT_ROOT . "views/img/default_poster.png";
+
+    public function constructMovies($movies){
+
+        $results = array();
+        foreach($movies as $movie){
+
+            //add default poster if needed
+            if($movie->getImg() == null){
+                $movie->setImg(self::DEFAULT_POSTER);
+            }
+            array_push($results, $movie);
+        }
+
+        return $results;
+        
+
     }
 
     const API_ROOT_URL = "https://api.themoviedb.org/3/";
@@ -133,6 +160,7 @@ class MovieDaos extends BaseDaos{
             }
             $page++;
         }while(!empty($moviesApi));
+
     }
 
 
@@ -145,7 +173,8 @@ class MovieDaos extends BaseDaos{
         $resultMovies = array();
 
         foreach($movies as $jsonMovie){
-            $movie = new Movie($jsonMovie['id'], $jsonMovie['original_title'], $jsonMovie['overview'], self::API_IMAGE_URL . $jsonMovie['poster_path'], $jsonMovie['original_language'], $jsonMovie['genre_ids'], $jsonMovie['release_date']);
+            $poster =  (!empty($jsonMovie['poster_path'])) ? self::API_IMAGE_URL . $jsonMovie['poster_path'] : null;
+            $movie = new Movie($jsonMovie['id'], $jsonMovie['original_title'], $jsonMovie['overview'], $poster, $jsonMovie['original_language'], $jsonMovie['genre_ids'], $jsonMovie['release_date']);
 
             $resultMovies[] = $movie;
         }
@@ -163,14 +192,17 @@ class MovieDaos extends BaseDaos{
 
         $this->connection = Connection::getInstance();
         $resultSet = $this->connection->execute($query);
-        $resultMovies = array();
-        foreach($resultSet as $result){
-            $movie = new Movie($result['id_movie'], $result['title_movie'], $result['overview_movie'], $result['img_movie'], $result['language_movie'], $result['releaseDate_movie'], $result['duration_movie']);
 
-            $resultMovies[] = $movie;
+
+        $movies = array();
+        foreach($resultSet as $movieArray){
+            //get genres
+            $genreDaos = GenreDaos::getInstance();
+            $movie = new Movie($movieArray['id_movie'], $movieArray['title_movie'], $movieArray['overview_movie'], $movieArray['img_movie'], $movieArray['language_movie'], $genreDaos->getByMovie($movieArray['id_movie']), $movieArray['releaseDate_movie'], $movieArray['duration_movie']);
+            
+            array_push($movies, $movie);
         }
-
-        return $resultMovies;
+        return $this->constructMovies($movies);
     }
 
 }
