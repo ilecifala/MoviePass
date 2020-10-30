@@ -4,6 +4,7 @@ use daos\showDaos as ShowDaos;
 use daos\cinemaDaos as CinemaDaos;
 use daos\GenreDaos as GenreDaos;
 use daos\MovieDaos as MovieDaos;
+use daos\RoomDaos as RoomDaos;
 use models\show as Show;
 use controllers\movieController as MovieController;
 
@@ -19,6 +20,7 @@ class ShowController{
         $this->cinemaDaos = new CinemaDaos();  
         $this->genreDaos = GenreDaos::getInstance();  
         $this->movieDaos = new MovieDaos();  
+        $this->roomDaos = new RoomDaos();  
     }
 
     public function index(){
@@ -52,12 +54,14 @@ class ShowController{
         
         if ($_POST){
             
+            //get params
             $idMovie = $_POST['movieId'];
             $date = $_POST['time'];
             $idRoom = $_POST['roomId'];
             $idCinema = $_POST['cinemaId'];
 
-            $show = new Show($idMovie, $idRoom, $date);
+            //create new show
+            $show = new Show($this->movieDaos->getById($idMovie), $this->roomDaos->getById($idRoom), $date);
 
             echo $show->getDatetime();
 
@@ -72,11 +76,10 @@ class ShowController{
                 }
             }
 
+            echo "<pre>";
             $shows3Days = $this->showDaos->verifyShowDatetimeOverlap($show);
-            echo '<pre>';
-            var_dump($shows3Days);
-            echo '</pre>';
-
+            echo "</pre>";
+            
             echo $valid = $this->verify15Minutes($shows3Days, $show);
             
             if(!$valid){
@@ -109,40 +112,41 @@ class ShowController{
         $this->index();
     }
 
+    //fuck my life https://stackoverflow.com/questions/325933/determine-whether-two-date-ranges-overlap 
     private function verify15Minutes($shows3Days, $_show){
-        $movie = $this->movieDaos->getById($_show->getIdMovie());
-        $durationSeconds = ($movie->getDuration() + 15) * 60;
 
-        echo $showTime = strtotime($_show->getDatetime());
-        echo '<br>';
-        echo $endShow = strtotime($_show->getDatetime()) + $durationSeconds;
-        echo '<br>';
+        //echo "Duration movie to add: {$_show->getMovie()->getDuration()} <br>";
+        $durationSeconds = ($_show->getMovie()->getDuration() + 15) * 60;
+        //echo "Duration + 15 to seconds $durationSeconds <br>";
 
-        echo date('Y-m-d H:i:s', $showTime);
-        echo '<br>';
-        echo date('Y-m-d H:i:s', $endShow);
-        echo '<br>';
+        $showTime = strtotime($_show->getDatetime());
+
+        //echo "Date start show to add " . date('Y-m-d H:i:s', $showTime) . " ($showTime)<br>";
+
+        $endShow = strtotime($_show->getDatetime()) + $durationSeconds;
+
+        //echo "Date end show to add " . date('Y-m-d H:i:s', $endShow) . "($endShow)<br>";
 
         $valid = true;
 
+        //echo "----loop---<br>";
         foreach($shows3Days as $show){
-            $seconds = strtotime($show->getDatetime()) + $durationSeconds;
-            $result = abs($showTime - $seconds) / 60;
             
-            echo date('Y-m-d H:i:s', strtotime($show->getDatetime()));
-            echo '<br>'; 
-            echo strtotime($show->getDatetime());
-            echo '<br>'; 
-            //Si el final del show que queremos agregar es despues de la fecha de inicio de la funcion ya agregada en la bd
-            if($endShow > strtotime($show->getDatetime())){
-                echo 'primer if';
+            //echo "<pre>";
+            //var_dump($show);
+            //echo "</pre>";
+
+            $dbShowStart = strtotime($show->getDateTime());
+
+            $dbShowMovieDuration = ($show->getMovie()->getDuration() +15) * 60;
+            $dbShowEnd = $dbShowStart + $dbShowMovieDuration;
+
+            //echo "Date start show in db " . date('Y-m-d H:i:s', $dbShowStart) . " ($dbShowStart)<br>";    
+            //echo "Date end show in db " . date('Y-m-d H:i:s', $dbShowEnd) . "($dbShowEnd)<br>";
+
+            if(($showTime <= $dbShowEnd) and ($dbShowStart <= $endShow)){
                 $valid = false;
-            }
-            
-            //Si el fin del show de la bd es antes del inicio del show que queremos agregrar
-            if((strtotime($show->getDatetime()) + $durationSeconds) < $showTime){
-                $valid = false;
-                echo 'segundo if';
+                return $valid;
             }
         }
         return $valid;

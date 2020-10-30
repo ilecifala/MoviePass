@@ -36,6 +36,7 @@ class ShowDaos extends BaseDaos{
                                     $show['overview_movie'], 
                                     $show['img_movie'], 
                                     $show['language_movie'],                                    
+                                    null,                                    
                                     $show['releaseDate_movie'],
                                     $show['duration_movie']),
                                 new Room(
@@ -84,8 +85,9 @@ class ShowDaos extends BaseDaos{
         INNER JOIN cinemas c ON c.id_cinema = r.idCinema_room
         WHERE DAY(s.datetime_show) = DAY(:datetime_show) AND s.idMovie_show = :id_movie AND r.idCinema_room != :id_cinema;';
         
+
         $parameters['datetime_show'] = $show->getDatetime();
-        $parameters['id_movie'] = $show->getIdMovie();
+        $parameters['id_movie'] = $show->getMovie()->getId();
         $parameters['id_cinema'] = $idCinema;
         
         $connection = Connection::getInstance();
@@ -94,28 +96,44 @@ class ShowDaos extends BaseDaos{
         return $resultSet;
     }
 
-    public function verifyShowDatetimeOverlap($show){
-        $query = "SELECT s.*, m.duration_movie FROM shows s
+    public function verifyShowDatetimeOverlap($_show){
+        $query = "SELECT s.*, m.*, r.* FROM shows s
         inner join movies m on m.id_movie = s.idMovie_show
+        INNER JOIN rooms r ON s.idRoom_show = r.id_room
         WHERE (DATE(s.datetime_show) = DATE(DATE_SUB(:datetime_show, INTERVAL 1 DAY))
         OR DATE(s.datetime_show) = DATE(:datetime_show)
         OR DATE(s.datetime_show) = DATE(DATE_ADD(:datetime_show, INTERVAL 1 DAY)))
         AND (s.idRoom_show = :idRoom_show)";
 
-        $parameters['datetime_show'] = $show->getDatetime();
-        $parameters['idRoom_show'] = $show->getIdRoom();
+        $parameters['datetime_show'] = $_show->getDatetime();
+        $parameters['idRoom_show'] = $_show->getRoom()->getId();
         
         $connection = Connection::getInstance();
         $resultSet = $connection->executeWithAssoc($query,$parameters);
 
         $results = array();
 
-        foreach ($resultSet as $array_show){
-            $object = new show(null, null, $array_show['datetime_show']);
-            $object->setId($array_show['id_show']);
+        foreach ($resultSet as $show){
+            $object = new show(
+                            new Movie(
+                                $show['id_movie'],
+                                $show['title_movie'], 
+                                $show['overview_movie'], 
+                                $show['img_movie'], 
+                                $show['language_movie'],                                    
+                                null,
+                                $show['releaseDate_movie'],
+                                $show['duration_movie']),
+                            new Room(
+                                    $show['id_room'],
+                                    $show['price_room'],
+                                    $show['capacity_room'],
+                                    $show['idCinema_room']),
+                            $show['datetime_show']);
+
+            $object->setId($show['id_show']);
             $results[] = $object;
         }
-        
         return $results;
     }
 }

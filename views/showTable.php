@@ -32,8 +32,8 @@
                 foreach($shows['shows'] as $index=>$show){?>
                 <tr>
                     <td><?=$show->getDatetime()?></td>
-                    <td><?=$show->getIdMovie()->getTitle()?></td>
-                    <td><?=$show->getIdRoom()->getName()?></td>
+                    <td><?=$show->getMovie()->getTitle()?></td>
+                    <td><?=$show->getRoom()->getName()?></td>
                     <td><?=$shows['cinemas'][$index]?></td>
                     
                     <td>
