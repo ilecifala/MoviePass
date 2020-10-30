@@ -76,7 +76,7 @@ class ShowDaos extends BaseDaos{
         return parent::_modify($show, $show->getId(), "id");
     }
 
-    public function verifyDate($show, $idCinema){
+    public function verifyShowDay($show, $idCinema){
         
         $query = 'SELECT c.id_cinema, s.idMovie_show, s.datetime_show from ' . self::TABLE_NAME . ' s
         INNER JOIN movies m ON m.id_movie = s.idMovie_show
@@ -94,20 +94,29 @@ class ShowDaos extends BaseDaos{
         return $resultSet;
     }
 
-    public function verifyDatetime($show){
-        $query = 'SELECT s.id_show, TIMESTAMPDIFF(minute, DATE_ADD(DATE_ADD(s.datetime_show, INTERVAL '. self::SHOW_INTERVAL .' minute),INTERVAL m.duration_movie minute), :datetime_show) as dif_minutes from shows s
-        INNER JOIN rooms r ON s.idRoom_show = r.id_room
-        INNER JOIN movies m ON m.id_movie = s.idMovie_show
-        WHERE s.idRoom_show = :idRoom_show;';
+    public function verifyShowDatetimeOverlap($show){
+        $query = "SELECT s.*, m.duration_movie FROM shows s
+        inner join movies m on m.id_movie = s.idMovie_show
+        WHERE (DATE(s.datetime_show) = DATE(DATE_SUB(:datetime_show, INTERVAL 1 DAY))
+        OR DATE(s.datetime_show) = DATE(:datetime_show)
+        OR DATE(s.datetime_show) = DATE(DATE_ADD(:datetime_show, INTERVAL 1 DAY)))
+        AND (s.idRoom_show = :idRoom_show)";
 
         $parameters['datetime_show'] = $show->getDatetime();
         $parameters['idRoom_show'] = $show->getIdRoom();
         
         $connection = Connection::getInstance();
-        $resultSet = $connection->execute($query,$parameters);
+        $resultSet = $connection->executeWithAssoc($query,$parameters);
 
+        $results = array();
+
+        foreach ($resultSet as $array_show){
+            $object = new show(null, null, $array_show['datetime_show']);
+            $object->setId($array_show['id_show']);
+            $results[] = $object;
+        }
         
-        return $resultSet;
+        return $results;
     }
 }
 ?>

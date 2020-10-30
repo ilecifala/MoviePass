@@ -59,12 +59,11 @@ class ShowController{
 
             $show = new Show($idMovie, $idRoom, $date);
 
+            echo $show->getDatetime();
+
             //do the verification (SQL, PHP?)
-            $result = $this->showDaos->verifyDate($show, $idCinema);
+            $result = $this->showDaos->verifyShowDay($show, $idCinema);
             $error = null;
-            echo '<pre>';
-            var_dump($result);
-            echo '</pre>';
             if(!empty($result)){
                 foreach($result as $res){
                     if($res['id_cinema'] != $idCinema){
@@ -72,15 +71,19 @@ class ShowController{
                     }
                 }
             }
-            $result = $this->showDaos->verifyDatetime($show);
-            foreach($result as $res){
-                echo abs($res['dif_minutes']).'adadasdadad';
-                if (abs($res['dif_minutes']) < 15){
-                    $error = 'Ya hay una función en ese horario.';
-                }
+
+            $shows3Days = $this->showDaos->verifyShowDatetimeOverlap($show);
+            echo '<pre>';
+            var_dump($shows3Days);
+            echo '</pre>';
+
+            echo $valid = $this->verify15Minutes($shows3Days, $show);
+            
+            if(!$valid){
+                $error = 'Ya hay una funcion a esa hora.';
             }
             if($error == null){
-                $this->showDaos->add($show);
+                //$this->showDaos->add($show);
                 $this->index();
             } else {
                 require_once(VIEWS_PATH . "header.php");
@@ -104,6 +107,45 @@ class ShowController{
         
         $this->showDaos->remove($id);
         $this->index();
+    }
+
+    private function verify15Minutes($shows3Days, $_show){
+        $movie = $this->movieDaos->getById($_show->getIdMovie());
+        $durationSeconds = ($movie->getDuration() + 15) * 60;
+
+        echo $showTime = strtotime($_show->getDatetime());
+        echo '<br>';
+        echo $endShow = strtotime($_show->getDatetime()) + $durationSeconds;
+        echo '<br>';
+
+        echo date('Y-m-d H:i:s', $showTime);
+        echo '<br>';
+        echo date('Y-m-d H:i:s', $endShow);
+        echo '<br>';
+
+        $valid = true;
+
+        foreach($shows3Days as $show){
+            $seconds = strtotime($show->getDatetime()) + $durationSeconds;
+            $result = abs($showTime - $seconds) / 60;
+            
+            echo date('Y-m-d H:i:s', strtotime($show->getDatetime()));
+            echo '<br>'; 
+            echo strtotime($show->getDatetime());
+            echo '<br>'; 
+            //Si el final del show que queremos agregar es despues de la fecha de inicio de la funcion ya agregada en la bd
+            if($endShow > strtotime($show->getDatetime())){
+                echo 'primer if';
+                $valid = false;
+            }
+            
+            //Si el fin del show de la bd es antes del inicio del show que queremos agregrar
+            if((strtotime($show->getDatetime()) + $durationSeconds) < $showTime){
+                $valid = false;
+                echo 'segundo if';
+            }
+        }
+        return $valid;
     }
 }
 
