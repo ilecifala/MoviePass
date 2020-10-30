@@ -66,7 +66,17 @@ class ShowDaos extends BaseDaos{
     }
 
     public function add($show){
-        return parent::_add($show);
+
+        $query = "INSERT INTO " . self::TABLE_NAME . " (idMovie_show, datetime_show, idRoom_show)
+                                                        values(:idMovie_show, :datetime_show, :idRoom_show);";
+
+        $params['idMovie_show'] = $show->getMovie()->getId();
+        $params['idRoom_show'] = $show->getRoom()->getId();
+        $params['datetime_show'] = $show->getDateTime();
+
+        $this->connection = Connection::getInstance();
+        return $this->connection->executeNonQuery($query, $params);
+
     }
 
     public function remove($id){

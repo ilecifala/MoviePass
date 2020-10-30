@@ -6,13 +6,13 @@ class Show{
     private $id;
     private $movie;
     private $room;
-    private $date;
+    private $datetime;
 
-    public function __construct($movie, $room, $date){
+    public function __construct($movie, $room, $datetime){
 
         $this->movie = $movie;
         $this->room = $room;
-        $this->date = $date;
+        $this->datetime = $datetime;
     }
 
     public function getId(){
@@ -40,11 +40,11 @@ class Show{
     }
 
     public function getDatetime(){
-        return $this->date;
+        return $this->datetime;
     }
 
-    public function setDatetime($date){
-        $this->date = $date;
+    public function setDatetime($datetime){
+        $this->datetime = $datetime;
     }
 }
 

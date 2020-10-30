@@ -86,7 +86,7 @@ class ShowController{
                 $error = 'Ya hay una funcion a esa hora.';
             }
             if($error == null){
-                //$this->showDaos->add($show);
+                $this->showDaos->add($show);
                 $this->index();
             } else {
                 require_once(VIEWS_PATH . "header.php");
