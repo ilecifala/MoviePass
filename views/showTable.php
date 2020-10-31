@@ -37,8 +37,8 @@
                     <td><?=$shows['cinemas'][$index]?></td>
                     
                     <td>
-                        <form action="<?=FRONT_ROOT?>show/modify/<?=$show->getId()?>">
-                            
+                        <form action="<?=FRONT_ROOT?>show/modify/" method='post'>
+                            <input type="hidden" name="id" value="<?=$show->getId()?>">
                             <button class="material-icons" onclick="this.form.submit()">&#xE254;</i>                             
                         </form>
                         

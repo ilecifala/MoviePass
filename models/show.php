@@ -8,11 +8,11 @@ class Show{
     private $idRoom;
     private $datetime;
 
-    public function __construct($movie, $room, $date){
+    public function __construct($idMovie = '', $idRoom = '', $datetime = ''){
 
-        $this->movie = $movie;
-        $this->room = $room;
-        $this->date = $date;
+        $this->idMovie = $idMovie;
+        $this->idRoom = $idRoom;
+        $this->datetime = $datetime;
     }
 
     public function getId(){
@@ -24,27 +24,27 @@ class Show{
     }
 
     public function getIdMovie(){
-        return $this->movie;
+        return $this->idMovie;
     }
 
-    public function setIdMovie($movie){
-        $this->movie = $movie;
+    public function setIdMovie($idMovie){
+        $this->idMovie = $idMovie;
     }
 
     public function getIdRoom(){
-        return $this->room;
+        return $this->idRoom;
     }
 
-    public function setIdRoom($room){
-        $this->room = $room;
+    public function setIdRoom($idRoom){
+        $this->idRoom = $idRoom;
     }
 
     public function getDatetime(){
-        return $this->date;
+        return $this->datetime;
     }
 
-    public function setDatetime($date){
-        $this->date = $date;
+    public function setDatetime($datetime){
+        $this->datetime = $datetime;
     }
 }
 

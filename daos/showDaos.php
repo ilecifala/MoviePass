@@ -36,6 +36,7 @@ class ShowDaos extends BaseDaos{
                                     $show['overview_movie'], 
                                     $show['img_movie'], 
                                     $show['language_movie'],                                    
+                                    null,                                    
                                     $show['releaseDate_movie'],
                                     $show['duration_movie']),
                                 new Room(
@@ -65,7 +66,17 @@ class ShowDaos extends BaseDaos{
     }
 
     public function add($show){
-        return parent::_add($show);
+
+        $query = "INSERT INTO " . self::TABLE_NAME . " (idMovie_show, datetime_show, idRoom_show)
+                                                        values(:idMovie_show, :datetime_show, :idRoom_show);";
+
+        $params['idMovie_show'] = $show->getIdMovie()->getId();
+        $params['idRoom_show'] = $show->getIdRoom()->getId();
+        $params['datetime_show'] = $show->getDatetime();
+
+        $this->connection = Connection::getInstance();
+        return $this->connection->executeNonQuery($query, $params);
+
     }
 
     public function remove($id){
@@ -76,7 +87,7 @@ class ShowDaos extends BaseDaos{
         return parent::_modify($show, $show->getId(), "id");
     }
 
-    public function verifyDate($show, $idCinema){
+    public function verifyShowDay($show, $idCinema){
         
         $query = 'SELECT c.id_cinema, s.idMovie_show, s.datetime_show from ' . self::TABLE_NAME . ' s
         INNER JOIN movies m ON m.id_movie = s.idMovie_show
@@ -84,8 +95,9 @@ class ShowDaos extends BaseDaos{
         INNER JOIN cinemas c ON c.id_cinema = r.idCinema_room
         WHERE DAY(s.datetime_show) = DAY(:datetime_show) AND s.idMovie_show = :id_movie AND r.idCinema_room != :id_cinema;';
         
+
         $parameters['datetime_show'] = $show->getDatetime();
-        $parameters['id_movie'] = $show->getIdMovie();
+        $parameters['id_movie'] = $show->getIdMovie()->getId();
         $parameters['id_cinema'] = $idCinema;
         
         $connection = Connection::getInstance();
@@ -94,20 +106,45 @@ class ShowDaos extends BaseDaos{
         return $resultSet;
     }
 
-    public function verifyDatetime($show){
-        $query = 'SELECT s.id_show, TIMESTAMPDIFF(minute, DATE_ADD(DATE_ADD(s.datetime_show, INTERVAL '. self::SHOW_INTERVAL .' minute),INTERVAL m.duration_movie minute), :datetime_show) as dif_minutes from shows s
+    public function verifyShowDatetimeOverlap($_show){
+        $query = "SELECT s.*, m.*, r.* FROM shows s
+        inner join movies m on m.id_movie = s.idMovie_show
         INNER JOIN rooms r ON s.idRoom_show = r.id_room
-        INNER JOIN movies m ON m.id_movie = s.idMovie_show
-        WHERE s.idRoom_show = :idRoom_show;';
+        WHERE (DATE(s.datetime_show) = DATE(DATE_SUB(:datetime_show, INTERVAL 1 DAY))
+        OR DATE(s.datetime_show) = DATE(:datetime_show)
+        OR DATE(s.datetime_show) = DATE(DATE_ADD(:datetime_show, INTERVAL 1 DAY)))
+        AND (s.idRoom_show = :idRoom_show)";
 
-        $parameters['datetime_show'] = $show->getDatetime();
-        $parameters['idRoom_show'] = $show->getIdRoom();
+        $parameters['datetime_show'] = $_show->getDatetime();
+        $parameters['idRoom_show'] = $_show->getIdRoom()->getId();
         
         $connection = Connection::getInstance();
-        $resultSet = $connection->execute($query,$parameters);
+        $resultSet = $connection->executeWithAssoc($query,$parameters);
 
-        
-        return $resultSet;
+        $results = array();
+
+        foreach ($resultSet as $show){
+            $object = new show(
+                            new Movie(
+                                $show['id_movie'],
+                                $show['title_movie'], 
+                                $show['overview_movie'], 
+                                $show['img_movie'], 
+                                $show['language_movie'],                                    
+                                null,
+                                $show['releaseDate_movie'],
+                                $show['duration_movie']),
+                            new Room(
+                                    $show['id_room'],
+                                    $show['price_room'],
+                                    $show['capacity_room'],
+                                    $show['idCinema_room']),
+                            $show['datetime_show']);
+
+            $object->setId($show['id_show']);
+            $results[] = $object;
+        }
+        return $results;
     }
 }
 ?>
